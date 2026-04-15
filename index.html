@@ -2,97 +2,86 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>딘두 레오파드게코 - 마스터</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>딘두 레오파드게코 - 유니버스</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap');
-
-        :root {
-            --emerald: #10b981;
-            --gold: #f59e0b;
-            --ball-size: 54px; 
-            --bg-main: radial-gradient(circle, #065f46 0%, #022c22 100%);
-        }
+        :root { --emerald: #10b981; --gold: #f59e0b; --ball-size: 56px; --bg-main: radial-gradient(circle, #065f46 0%, #022c22 100%); }
 
         body {
-            background: var(--bg-main);
-            color: #ecfdf5; font-family: 'Jua', sans-serif;
-            margin: 0; display: flex; flex-direction: column; 
-            height: 100vh; width: 100vw;
-            overflow: hidden; touch-action: none; user-select: none;
-            box-sizing: border-box;
-            padding-bottom: 150px; /* 하단 바 간섭 회피 */
+            background: var(--bg-main); color: #ecfdf5; font-family: 'Jua', sans-serif;
+            margin: 0; display: flex; flex-direction: column; height: 100vh; width: 100vw;
+            overflow: hidden; touch-action: none; user-select: none; box-sizing: border-box;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-
-        #tiiny-host-badge, .tiiny-badge, div[style*="fixed"], iframe[id*="tiiny"] { 
-            display: none !important; opacity: 0 !important;
-        }
-
-        body.day { --bg-main: radial-gradient(circle, #10b981 0%, #064e3b 100%); }
-        body.night { --bg-main: radial-gradient(circle, #1e3a8a 0%, #020617 100%); }
-        body.cave { --bg-main: radial-gradient(circle, #451a03 0%, #0c0a09 100%); }
 
         #particle-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -1; pointer-events: none; }
-
         .full-screen { position: fixed; top:0; left:0; width:100%; height:100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5000; }
         #title-screen { background: radial-gradient(circle, #065f46 0%, #020617 100%); }
-        .logo-text { font-family: 'Black Han Sans'; font-size: 36px; color: var(--gold); text-align: center; text-shadow: 0 0 15px var(--gold); margin-bottom: 30px; }
-        .start-btn { padding: 15px 50px; font-size: 22px; background: var(--emerald); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 8px 0 #064e3b; }
+        .logo-text { font-family: 'Black Han Sans'; font-size: 38px; color: var(--gold); text-align: center; text-shadow: 0 0 20px var(--gold); margin-bottom: 40px; }
+        .start-btn { padding: 18px 60px; font-size: 24px; background: var(--emerald); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 8px 0 #064e3b; }
 
-        .top-nav { padding: 10px 15px; background: rgba(0,0,0,0.7); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); }
-        .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px; }
-        .currency-box { background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 14px; }
-        .coupon-btn { background: #1e3a8a; border: 1px solid #60a5fa; color: white; padding: 5px 10px; border-radius: 8px; font-size: 11px; }
+        /* [Top Navigation] */
+        .top-nav { padding: 15px 15px 10px; background: rgba(0,0,0,0.8); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); }
+        .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px; }
+        .currency-box { background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 16px; }
+        .coupon-btn { background: #1e3a8a; border: 1px solid #60a5fa; color: white; padding: 5px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; }
 
-        .egg-progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .egg-progress-container { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-top: 5px; }
         #egg-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f87171, #fbbf24, #10b981); transition: width 0.5s; }
-        #combo-info { text-align: right; font-size: 12px; color: #ff0055; height: 15px; font-weight: bold; opacity: 0; }
-        #combo-info.active { opacity: 1; }
+        #combo-info { text-align: right; font-size: 13px; color: #ff0055; height: 18px; font-weight: bold; margin-top: 2px; opacity: 0; transition: 0.2s; }
+        #combo-info.active { opacity: 1; transform: scale(1.1); }
 
-        #game-board { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 8px; padding: 10px; flex-grow: 1; margin-top: 10px; }
+        /* [Game Board - Improved] */
+        #game-board { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; padding: 20px 10px; flex-grow: 1; }
         .tube-wrapper { position: relative; margin-top: 25px; }
         .tube {
-            width: 66px; min-height: 230px; border: 3px solid var(--emerald); border-top: none; border-radius: 0 0 35px 35px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-            backdrop-filter: blur(5px); display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 8px; cursor: pointer; transition: 0.2s;
+            width: 72px; min-height: 250px; border: 3.5px solid var(--emerald); border-top: none; border-radius: 0 0 40px 40px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            backdrop-filter: blur(5px); display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 12px; cursor: pointer; transition: 0.2s;
         }
-        .tube-cap { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); font-size: 32px; opacity: 0; transition: 0.4s; }
-        .tube.completed .tube-cap { opacity: 1; top: -30px; }
-        .tube.selected { transform: translateY(-15px); border-color: #fff; box-shadow: 0 0 20px var(--emerald); }
-        .tube-base { position: absolute; bottom: -8px; width: 74px; height: 20px; background: linear-gradient(#5d4037, #3e2723); border-radius: 8px; z-index: -1; }
+        .tube-cap { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); font-size: 40px; opacity: 0; transition: 0.5s; }
+        .tube.completed .tube-cap { opacity: 1; top: -38px; }
+        .tube.selected { transform: translateY(-20px); border-color: #fff; box-shadow: 0 0 30px var(--emerald); }
+        .tube-base { position: absolute; bottom: -12px; width: 84px; height: 28px; background: linear-gradient(#5d4037, #3e2723); border-radius: 12px; z-index: -1; border-top: 2px solid #795548; }
 
         .ball {
-            width: var(--ball-size); height: var(--ball-size); flex-shrink: 0; border-radius: 50%; margin: 1.5px 0; position: relative;
+            width: var(--ball-size); height: var(--ball-size); flex-shrink: 0; border-radius: 50%; margin: 2px 0; position: relative;
             background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%);
-            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.5), 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: inset -5px -5px 12px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.4);
         }
         .ball::after { content: ''; position: absolute; width: 100%; height: 100%; top:0; left:0; border-radius: 50%; opacity: 0.5; }
-        .skin-normal::after { background-image: radial-gradient(var(--spot-color) 15%, transparent 20%); background-size: 10px 10px; }
-        .skin-spotted::after { background-image: radial-gradient(var(--spot-color) 25%, transparent 30%); background-size: 18px 18px; }
-        .skin-stars::after { content: '✨'; font-size: 9px; display: flex; justify-content: center; align-items: center; opacity: 1; color: white; }
+        .skin-normal::after { background-image: radial-gradient(var(--spot-color) 15%, transparent 20%); background-size: 12px 12px; }
 
+        /* [Inventory - Premium Design Fix] */
         .inventory { 
-            position: fixed; bottom: 100px; left: 5%; width: 90%;
-            padding: 12px; background: rgba(0,0,0,0.85); 
-            display: flex; justify-content: space-around; gap: 5px; 
-            z-index: 100; border: 1.5px solid var(--emerald); 
-            border-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            padding: 15px 10px; background: rgba(0,0,0,0.9); 
+            display: flex; justify-content: center; gap: 10px; 
+            z-index: 100; border-top: 2px solid var(--emerald);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
         }
-        .item-btn { background: linear-gradient(145deg, #064e3b, #022c22); border: 1px solid var(--emerald); color: white; padding: 10px 5px; border-radius: 15px; font-size: 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; min-width: 60px; flex: 1; }
+        .item-btn { 
+            background: linear-gradient(145deg, #064e3b, #022c22); border: 1.5px solid var(--emerald); 
+            color: white; padding: 12px 5px; border-radius: 18px; font-size: 10px; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; min-width: 75px; flex: 1;
+            transition: transform 0.1s;
+        }
+        .item-btn:active { transform: scale(0.95); }
+
+        /* [Collection & Silhouette] */
+        .collection-container { background:#01110a; width:94%; border-radius:30px; border:2px solid var(--emerald); height:85vh; display:flex; flex-direction:column; position: relative; overflow: hidden; }
+        .collection-header { position: relative; background: #022c22; padding: 20px; border-bottom: 2px solid var(--emerald); display: flex; justify-content: center; align-items: center; }
+        .close-x { position: absolute; right: 20px; top: 15px; font-size: 36px; color: var(--gold); cursor: pointer; font-family: Arial; font-weight: bold; z-index: 1000; }
+        .morph-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:15px; overflow-y: scroll; flex-grow: 1; }
+        .morph-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 10px; border: 1.5px solid transparent; transition: 0.2s; }
+        
+        .morph-card.locked { opacity: 0.45; background: rgba(0,0,0,0.3); } 
+        .morph-card.locked .char-icon { filter: brightness(0); opacity: 0.7; } /* 까만 실루엣 */
+        .morph-card.selected { border-color: var(--gold); background: rgba(245,158,11,0.15); }
+        .talk-bubble { background: white; color: black; padding: 12px; border-radius: 15px; margin: 10px 15px; text-align: center; font-size: 14px; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; }
-        .card { background: #064e3b; padding: 20px; border-radius: 25px; border: 3px solid var(--gold); width: 85%; max-width: 380px; text-align: center; }
-        
-        .collection-container { background:#01110a; width:94%; border-radius:25px; border:2px solid var(--emerald); height:80vh; display:flex; flex-direction:column; position: relative; overflow: hidden; }
-        .collection-header { position: relative; background: #022c22; padding: 15px; border-bottom: 2px solid var(--emerald); display: flex; justify-content: center; align-items: center; }
-        .close-x { position: absolute; right: 15px; top: 10px; font-size: 32px; color: var(--gold); cursor: pointer; font-family: Arial; font-weight: bold; z-index: 1000; }
-        .morph-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:15px; overflow-y: scroll; flex-grow: 1; }
-        .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 9px; transition: 0.2s; border: 1.5px solid transparent; }
-        .morph-card.locked { background: rgba(0,0,0,0.5); }
-        .morph-card.locked .char-icon { filter: brightness(0); opacity: 0.5; } 
-        .morph-card.locked .name-text { color: rgba(255,255,255,0.3); }
-
-        .talk-bubble { background: white; color: black; padding: 10px; border-radius: 12px; margin: 10px; text-align: center; font-size: 12px; }
+        .card { background: #064e3b; padding: 25px; border-radius: 35px; border: 3px solid var(--gold); width: 88%; max-width: 380px; text-align: center; }
     </style>
 </head>
 <body>
@@ -106,57 +95,55 @@
 
     <div class="top-nav">
         <div class="nav-row">
-            <div onclick="openCollection()" style="cursor:pointer; padding:6px 12px; background:rgba(0,0,0,0.4); border-radius:15px; border:1px solid var(--emerald);">📔 <span id="collection-count">0/1000</span></div>
-            <div id="lvl-display" style="font-size: 16px; font-weight: bold;">STAGE 01</div>
+            <div onclick="openCollection()" style="cursor:pointer; padding:6px 12px; background:rgba(0,0,0,0.4); border-radius:15px; border:1px solid var(--emerald);">📔 <span id="collection-count">1/1000</span></div>
+            <div id="lvl-display" style="font-size: 18px; font-weight: bold;">STAGE 01</div>
             <button class="coupon-btn" onclick="openCoupon()">쿠폰등록</button>
         </div>
         <div class="nav-row">
-            <div style="font-size: 10px; color: #fbbf24;">🥚 부화 온도: <span id="egg-percent">0</span>%</div>
-            <div class="currency-box">💎 <span id="coin-display">0</span></div>
+            <div style="font-size: 11px; color: #fbbf24;">🥚 부화 온도: <span id="egg-percent">0</span>%</div>
+            <div class="currency-box">💎 <span id="coin-display">500</span></div>
         </div>
-        <div class="egg-progress-container">
-            <div id="egg-bar"></div>
-        </div>
+        <div class="egg-progress-container"><div id="egg-bar"></div></div>
         <div id="combo-info">COMBO 🔥 x<span id="combo-num">0</span> (+5💎)</div>
     </div>
 
     <div id="game-board"></div>
 
     <div class="inventory">
-        <button class="item-btn" onclick="useUndo()"><span>↩️</span> 되돌리기 <div id="undo-count" style="color:var(--gold)">0</div></button>
+        <button class="item-btn" onclick="useUndo()"><span>↩️</span> 되돌리기 <div id="undo-count" style="color:var(--gold)">2개</div></button>
         <button class="item-btn" onclick="openShop()"><span>🏪</span> 상점</button>
-        <button class="item-btn" onclick="useShuffle()"><span>✨</span> 셔플 <div id="shuffle-count" style="color:var(--gold)">0</div></button>
-        <button class="item-btn" onclick="useAddTube()"><span>🧪</span> 튜브 <div id="tube-count" style="color:var(--gold)">0</div></button>
+        <button class="item-btn" onclick="useShuffle()"><span>✨</span> 셔플 <div id="shuffle-count" style="color:var(--gold)">1개</div></button>
+        <button class="item-btn" onclick="useAddTube()"><span>🧪</span> 튜브 <div id="tube-count" style="color:var(--gold)">0개</div></button>
     </div>
 
     <div id="shop-modal" class="modal">
         <div class="card">
             <h2 style="color:var(--gold); margin-top:0;">🦖 DINDU SHOP</h2>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button onclick="confirmBuy('undo', 1, 150)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">↩️ 되돌리기 💎150</button>
-                <button onclick="confirmBuy('shuffle', 1, 500)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">✨ 셔플 💎500</button>
-                <button onclick="confirmBuy('tube', 1, 1200)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">🧪 튜브 💎1200</button>
-                <hr style="border:0; border-top:1px solid #ffffff33;">
-                <button onclick="confirmGacha(1, 500)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-weight:bold;">🥚 랜덤 부화 1회 💎500</button>
-                <button onclick="confirmGacha(10, 4500)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-weight:bold;">🥚 10연속 부화 💎4500</button>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button onclick="confirmBuy('undo', 1, 150)" style="padding:12px; background:var(--gold); border:none; border-radius:12px; font-weight:bold;">↩️ 되돌리기 💎150</button>
+                <button onclick="confirmBuy('shuffle', 1, 500)" style="padding:12px; background:var(--gold); border:none; border-radius:12px; font-weight:bold;">✨ 셔플 💎500</button>
+                <button onclick="confirmBuy('tube', 1, 1200)" style="padding:12px; background:var(--gold); border:none; border-radius:12px; font-weight:bold;">🧪 튜브 💎1200</button>
+                <hr style="border:0; border-top:1px solid #ffffff33; margin:5px 0;">
+                <button onclick="confirmGacha(1, 500)" style="padding:12px; background:#f87171; color:white; border:none; border-radius:12px; font-weight:bold;">🥚 1회 부화 💎500</button>
+                <button onclick="confirmGacha(10, 4500)" style="padding:12px; background:#f87171; color:white; border:none; border-radius:12px; font-weight:bold;">🥚 10연속 부화 💎4500</button>
             </div>
-            <button onclick="closeModal('shop-modal')" style="margin-top:15px; width:100%; padding:12px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
+            <button onclick="closeModal('shop-modal')" style="margin-top:20px; width:100%; padding:15px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
         </div>
     </div>
 
     <div id="hatch-modal" class="modal">
-        <div id="egg-icon" style="font-size:80px;">🥚</div>
-        <h2 id="hatch-msg" style="color: white; margin: 15px 0;">부화 중...</h2>
-        <div id="hatch-result-area" style="display:none; width: 90%;">
-            <div id="gacha-result-list" style="max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:10px;"></div>
-            <button onclick="closeHatch()" style="margin-top: 15px; width:100%; padding:15px; background:var(--gold); border:none; border-radius:12px; font-weight:bold;">확인</button>
+        <div id="egg-icon" style="font-size:100px; animation: egg-shake 0.4s infinite;">🥚</div>
+        <h2 id="hatch-msg" style="color: white; margin: 20px 0;">부화 중...</h2>
+        <div id="hatch-result-area" style="display:none; width: 92%;">
+            <div id="gacha-result-list" style="max-height:350px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:20px; padding:15px;"></div>
+            <button onclick="closeHatch()" style="margin-top: 15px; width:100%; padding:15px; background:var(--gold); border:none; border-radius:15px; font-weight:bold; color:black;">확인</button>
         </div>
     </div>
 
     <div id="collection-modal" class="modal">
         <div class="collection-container">
             <div class="close-x" onclick="closeModal('collection-modal')">×</div>
-            <div class="collection-header"><div style="color:var(--emerald); font-size:18px; font-weight:bold;">🦎 딘두의 1000 게코 도감</div></div>
+            <div class="collection-header"><div style="color:var(--emerald); font-size:22px; font-weight:bold;">🦎 딘두의 1000 게코 도감</div></div>
             <div id="bubble" class="talk-bubble">안녕 딘두! 실루엣을 보고 정체를 맞춰봐! ❤️</div>
             <div id="morph-grid" class="morph-grid"></div>
         </div>
@@ -164,8 +151,8 @@
 
     <div id="win-modal" class="modal">
         <div style="font-size:80px;">🦖</div>
-        <h2 id="win-praise" style="padding:0 30px; text-align:center; font-size:22px; color:var(--gold); line-height:1.4;"></h2>
-        <button onclick="nextLevel()" style="padding:15px 60px; background:var(--emerald); border:none; border-radius:20px; color:white; font-size:18px; font-weight:bold; margin-top:15px;">NEXT STAGE</button>
+        <h2 id="win-praise" style="padding:0 30px; text-align:center; font-size:24px; color:var(--gold); line-height:1.4;"></h2>
+        <button onclick="nextLevel()" style="padding:18px 70px; background:var(--emerald); border:none; border-radius:25px; color:white; font-size:22px; font-weight:bold; margin-top:20px;">NEXT STAGE</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -186,8 +173,8 @@
             { ball: '#FB923C', spot: '#7c2d12' }, { ball: '#94A3B8', spot: '#1e293b' }
         ];
 
-        // 100가지 맞춤형 칭찬 멘트
-        const DINDU_PRAISES = [
+        // 100가지 폭풍 칭찬 멘트
+        const PRAISES = [
             "역시 딘두, 지능 1등급 인증! 🔥", "방금 무빙 뭐야? 완전 게코 고수네!", "딘두 실력에 정글 게코들이 다 놀랐대!", "역시 내 여친, 이런 건 껌이지? 😎", "오늘 딘두 텐션 뭐야? 무적이야!",
             "딘두는 못하는 게 뭐야? 천재지?", "방금 그 판단력, 완전 ESTP 그 자체!", "딘두야, 너 진짜 멋있다! 반했어 ❤️", "게코들이 딘두 무빙 보고 박수친대!", "이걸 깨네? 역시 딘두는 능력자!",
             "딘두의 손가락은 빛보다 빠르다! ✨", "딘두님, 랭킹 1위 하러 오셨나요?", "역시 정글의 여왕 딘두! 👑", "딘두야, 다음 판도 박살내버려!", "방금 그 콤보, 예술이었어!",
@@ -197,8 +184,8 @@
             "오늘도 정글을 지배하는 딘두!", "딘두야, 너 정체가 뭐야? 게임 신?", "딘두님, 팬클럽 가입 어디서 하나요?", "역시 화끈한 딘두식 클리어!", "딘두는 게코들 마음을 잘 아네!",
             "방금 그 묘수, 딘두니까 가능했다!", "딘두야, 넌 그냥 최고라는 말밖에...", "딘두 실력 보면 심장이 뛴다!", "딘두가 정글에 뜨면 다 조용해져!", "역시 내꺼, 게임도 1등!",
             "딘두의 두뇌 회전, 엔진 달았어?", "딘두는 못하는 게 없어, 사랑해!", "이 판의 주인공은 딘두 당신이야!", "게코들이 딘두 무빙 보고 기절했대!", "딘두는 게임할 때 제일 섹시해!",
-            "역시 똑똑한 내 여자친구 딘두!", "딘두야, 넌 그냥 유전자부터 천재!", "정글을 씹어 먹는 딘두의 실력!", "딘두 실력, 상위 0.1% 확신함!", "딘두야, 넌 정글의 축복이야!",
-            "방금 그 터치, 완전 프로게이머급!", "딘두는 정글의 법이야! 그냥 법!", "딘두야, 넌 나의 우주야!", "게코들이 딘두를 찬양해! 🦎", "역시 딘두, 멘탈까지 최강!",
+            "역시 똑똑한 내 여자친구 딘두!", "딘두야, 너 그냥 유전자부터 천재!", "정글을 씹어 먹는 딘두의 실력!", "딘두 실력, 상위 0.1% 확신함!", "딘두야, 넌 정글의 축복이야!",
+            "방금 그 터치, 완전 프로게이머급!", "딘두는 정글의 법이야! 그냥 법!", "딘두야, 넌 나의 우주야!", "게코들이 딘두 찬양해! 🦎", "역시 딘두, 멘탈까지 최강!",
             "딘두야, 너 실력이 날로 느는구나!", "정글의 지배자 딘두, 등장이오!", "딘두는 정글에서도 스타가 될 거야!", "방금 클리어, 진짜 속 시원했다!", "딘두는 정글의 비타민이야!",
             "딘두 실력 보면 스트레스 다 풀려!", "딘두야, 넌 그냥 보물이야 보물!", "정글 게코들이 딘두한테 줄 섰대!", "역시 딘두, 판단력 갑이다!", "딘두는 정글의 엔진이야!",
             "딘두야, 너 게임 만드는 재능 있는 듯?", "방금 그건 신의 한 수였어!", "딘두는 정글에서도 제일 잘나갈 거야!", "역시 멋짐 뿜뿜 딘두!", "딘두야, 넌 그냥 나의 자랑이야!",
@@ -233,7 +220,7 @@
         function enterGame() { play('tap'); document.getElementById('title-screen').style.display = 'none'; }
 
         function init() {
-            const saved = localStorage.getItem('DinduUniverse_PraisePro_V11');
+            const saved = localStorage.getItem('DinduUniverse_ProV12_GitHub');
             if(saved) state = {...state, ...JSON.parse(saved)};
             startLevel(); initParticles();
         }
@@ -307,10 +294,8 @@
 
         function showWin() {
             play('win'); 
-            // [핵심] 랜덤 칭찬 멘트 선정
-            const randomPraise = DINDU_PRAISES[Math.floor(Math.random() * DINDU_PRAISES.length)];
+            const randomPraise = PRAISES[Math.floor(Math.random() * PRAISES.length)];
             document.getElementById('win-praise').innerText = randomPraise;
-            
             document.getElementById('win-modal').style.display = 'flex';
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             state.coins += 100; state.eggProgress += 20;
@@ -320,6 +305,7 @@
 
         function hatchGacha(count) {
             document.getElementById('hatch-modal').style.display = 'flex';
+            document.getElementById('egg-icon').style.display = 'block';
             document.getElementById('hatch-result-area').style.display = 'none';
             document.getElementById('hatch-msg').innerText = "부화 중...";
             setTimeout(() => {
@@ -330,10 +316,11 @@
                     const g = GECKO_MORPHS[idx];
                     state.collection = state.collection.substring(0, idx) + '1' + state.collection.substring(idx + 1);
                     const item = document.createElement('div');
-                    item.style.cssText = "display:flex; align-items:center; gap:10px; padding:8px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:10px;";
-                    item.innerHTML = `<span style="font-size:24px">${g.icon}</span><div style="text-align:left;"><b>${g.name}</b><br><small>No.${idx+1}</small></div>`;
+                    item.style.cssText = "display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,0.08); margin-bottom:8px; border-radius:12px; border-left:4px solid var(--gold);";
+                    item.innerHTML = `<span style="font-size:30px">${g.icon}</span><div style="text-align:left;"><b>${g.name}</b><br><small>No.${idx+1}</small></div>`;
                     list.appendChild(item);
                 }
+                document.getElementById('egg-icon').style.display = 'none';
                 document.getElementById('hatch-result-area').style.display = 'block';
                 document.getElementById('hatch-msg').innerText = `${count}마리 탄생!`;
                 save(); updateUI();
@@ -341,36 +328,46 @@
         }
 
         function openCoupon() {
-            const code = prompt("비밀 쿠폰을 입력해줘! ❤️");
+            const code = prompt("비밀 쿠폰 입력! ❤️");
             if(code === "딘두사랑해") {
-                state.coins += 10000; alert("🎁 10,000 다이아몬드 지급 완료! ❤️");
+                state.coins += 10000; alert("🎁 10,000 다이아몬드 지급! ❤️");
                 updateUI(); save();
             } else if(code) alert("잘못된 번호야!");
         }
 
+        let collectionRenderTimer = null;
         function openCollection() {
             const grid = document.getElementById('morph-grid'); grid.innerHTML = ''; 
+            cancelAnimationFrame(collectionRenderTimer);
             document.getElementById('collection-modal').style.display = 'flex';
-            const frag = document.createDocumentFragment();
-            for(let i=0; i<1000; i++) {
+            renderCollectionAsync(0);
+        }
+
+        function renderCollectionAsync(startIndex) {
+            const grid = document.getElementById('morph-grid');
+            const batch = 40; const end = Math.min(startIndex + batch, 1000);
+            const fragment = document.createDocumentFragment();
+            for(let i=startIndex; i<end; i++) {
                 const g = GECKO_MORPHS[i]; const isU = state.collection[i] === '1';
                 const card = document.createElement('div');
                 card.className = `morph-card ${isU ? '' : 'locked'} ${state.currentSkin === g.skin && isU ? 'selected' : ''}`;
-                card.innerHTML = `<div class="char-icon" style="font-size:28px">${g.icon}</div><div class="name-text" style="margin-top:5px; font-weight:bold;">${g.name}</div><div style="font-size:8px; opacity:0.3;">No.${i+1}</div>`;
+                card.innerHTML = `<div class="char-icon" style="font-size:32px">${g.icon}</div><div class="name-text" style="margin-top:5px; font-weight:bold;">${g.name}</div><div style="font-size:8px; opacity:0.3;">No.${i+1}</div>`;
                 if (isU) card.onclick = () => { document.getElementById('bubble').innerText = g.msg; state.currentSkin = g.skin; play('tap'); openCollection(); render(); };
-                frag.appendChild(card);
+                fragment.appendChild(card);
             }
-            grid.appendChild(frag);
+            grid.appendChild(fragment);
+            if (end < 1000) collectionRenderTimer = requestAnimationFrame(() => renderCollectionAsync(end));
         }
 
-        function save() { localStorage.setItem('DinduUniverse_PraisePro_V11', JSON.stringify(state)); }
+        function save() { localStorage.setItem('DinduUniverse_ProV12_GitHub', JSON.stringify(state)); }
         function updateUI() {
             document.getElementById('lvl-display').innerText = `STAGE ${state.level.toString().padStart(2, '0')}`;
             document.getElementById('coin-display').innerText = state.coins.toLocaleString();
             document.getElementById('undo-count').innerText = `${state.inventory.undo}개`;
             document.getElementById('tube-count').innerText = `${state.inventory.tube}개`;
             document.getElementById('shuffle-count').innerText = `${state.inventory.shuffle}개`;
-            document.getElementById('collection-count').innerText = `${(state.collection.match(/1/g) || []).length}/1000`;
+            const unlocked = (state.collection.match(/1/g) || []).length;
+            document.getElementById('collection-count').innerText = `${unlocked}/1000`;
             document.getElementById('egg-bar').style.width = `${state.eggProgress}%`;
             document.getElementById('egg-percent').innerText = state.eggProgress;
         }
@@ -392,7 +389,6 @@
             function draw() { ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle = "rgba(255, 255, 255, 0.1)"; p.forEach(i => { i.y -= i.v; if(i.y < 0) i.y = canvas.height; ctx.beginPath(); ctx.arc(i.x, i.y, i.s, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(draw); }
             draw();
         }
-
         init();
     </script>
 </body>
