@@ -12,8 +12,8 @@
             background: var(--bg-main); color: #ecfdf5; font-family: 'Jua', sans-serif;
             margin: 0; display: flex; flex-direction: column; height: 100vh; width: 100vw;
             overflow: hidden; touch-action: none; user-select: none; box-sizing: border-box;
-            /* 하단 고정 메뉴 공간 확보 */
-            padding-bottom: 120px; 
+            /* 인벤토리 높이만큼 여백 확보 */
+            padding-bottom: 90px; 
         }
 
         #particle-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -1; pointer-events: none; }
@@ -23,20 +23,23 @@
         .start-btn { padding: 18px 60px; font-size: 24px; background: var(--emerald); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 8px 0 #064e3b; }
 
         /* [Top UI] */
-        .top-nav { padding: 15px 15px 10px; background: rgba(0,0,0,0.8); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); flex-shrink: 0; }
+        .top-nav { padding: 10px 15px; background: rgba(0,0,0,0.8); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); flex-shrink: 0; }
         .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px; }
-        .currency-box { background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 15px; }
+        .currency-box { background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 14px; }
         .coupon-btn { background: #1e3a8a; border: 1px solid #60a5fa; color: white; padding: 5px 12px; border-radius: 10px; font-size: 11px; }
-
         .egg-progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 5px; }
         #egg-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f87171, #fbbf24, #10b981); transition: width 0.5s; }
 
-        /* [Game Board] */
-        #game-board { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 10px; padding: 10px; flex-grow: 1; overflow-y: auto; }
-        .tube-wrapper { position: relative; margin-top: 25px; }
+        /* [Game Board - 요청하신 공간 조정] */
+        #game-board { 
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; 
+            gap: 10px; padding: 20px 10px; flex-grow: 1; overflow-y: auto;
+            margin-top: 10px;
+        }
+        .tube-wrapper { position: relative; margin-top: 25px; margin-bottom: 10px; }
         .tube {
-            width: 68px; min-height: 230px; border: 3.5px solid var(--emerald); border-top: none; border-radius: 0 0 35px 35px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            width: 68px; min-height: 230px; border: 3px solid var(--emerald); border-top: none; border-radius: 0 0 35px 35px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
             backdrop-filter: blur(5px); display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 10px; cursor: pointer; transition: 0.2s;
         }
         .tube-cap { position: absolute; top: -38px; left: 50%; transform: translateX(-50%); font-size: 35px; opacity: 0; transition: 0.5s; }
@@ -44,35 +47,37 @@
         .tube.selected { transform: translateY(-15px); border-color: #fff; box-shadow: 0 0 25px var(--emerald); }
         .tube-base { position: absolute; bottom: -10px; width: 78px; height: 24px; background: linear-gradient(#5d4037, #3e2723); border-radius: 10px; z-index: -1; }
 
-        .ball { width: var(--ball-size); height: var(--ball-size); flex-shrink: 0; border-radius: 50%; margin: 2px 0; position: relative; background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); box-shadow: inset -4px -4px 10px rgba(0,0,0,0.5); }
+        .ball { width: var(--ball-size); height: var(--ball-size); flex-shrink: 0; border-radius: 50%; margin: 1.5px 0; position: relative; background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); box-shadow: inset -4px -4px 10px rgba(0,0,0,0.5); }
         .ball::after { content: ''; position: absolute; width: 100%; height: 100%; top:0; left:0; border-radius: 50%; opacity: 0.5; }
         .skin-normal::after { background-image: radial-gradient(var(--spot-color) 15%, transparent 20%); background-size: 11px 11px; }
 
-        /* [Inventory - Fixed to Bottom] */
+        /* [Inventory - 빨간 선 가이드 반영: 슬림 & 하단 밀착] */
         .inventory { 
             position: fixed; bottom: 0; left: 0; width: 100%;
-            padding: 15px 10px 30px; background: rgba(0,0,0,0.95); 
-            display: flex; justify-content: center; gap: 8px; 
+            height: 90px; /* 높이를 슬림하게 조정 */
+            padding: 5px 10px 15px; background: rgba(0,0,0,0.92); 
+            display: flex; justify-content: center; align-items: center; gap: 8px; 
             z-index: 100; border-top: 2px solid var(--emerald);
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+            box-sizing: border-box;
         }
         .item-btn { 
             background: linear-gradient(145deg, #064e3b, #022c22); border: 1.5px solid var(--emerald); 
-            color: white; padding: 10px 5px; border-radius: 15px; font-size: 10px; cursor: pointer; 
+            color: white; padding: 6px 4px; border-radius: 12px; font-size: 10px; cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; min-width: 65px; flex: 1;
+            height: 60px; justify-content: center;
         }
+        .item-btn span { font-size: 18px; margin-bottom: 2px; }
 
-        /* [Modals] */
+        /* [Modals & Collection] */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; }
-        .card { background: #064e3b; padding: 25px; border-radius: 30px; border: 3px solid var(--gold); width: 85%; max-width: 380px; text-align: center; }
-        
+        .card { background: #064e3b; padding: 25px; border-radius: 30px; border: 3px solid var(--gold); width: 88%; max-width: 380px; text-align: center; }
         .collection-container { background:#01110a; width:94%; border-radius:30px; border:2px solid var(--emerald); height:82vh; display:flex; flex-direction:column; position: relative; overflow: hidden; }
         .collection-header { position: relative; background: #022c22; padding: 15px; border-bottom: 2px solid var(--emerald); display: flex; justify-content: center; align-items: center; }
         .close-x { position: absolute; right: 15px; top: 10px; font-size: 32px; color: var(--gold); cursor: pointer; font-family: Arial; font-weight: bold; z-index: 1000; }
         .morph-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:15px; overflow-y: scroll; flex-grow: 1; }
-        .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; transition: 0.2s; border: 1.5px solid transparent; }
+        .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; border: 1.5px solid transparent; transition: 0.2s; }
         .morph-card.locked { opacity: 0.5; background: rgba(0,0,0,0.4); } 
-        .morph-card.locked .char-icon { filter: brightness(0); opacity: 0.6; } /* 까만 실루엣 */
+        .morph-card.locked .char-icon { filter: brightness(0); opacity: 0.6; } 
         .morph-card.selected { border-color: var(--gold); background: rgba(245,158,11,0.15); }
         .talk-bubble { background: white; color: black; padding: 10px; border-radius: 12px; margin: 10px; text-align: center; font-size: 12px; }
     </style>
@@ -167,8 +172,24 @@
         const PRAISES = [
             "역시 딘두, 지능 1등급 인증! 🔥", "방금 무빙 뭐야? 완전 게코 고수네!", "딘두 실력에 정글 게코들이 다 놀랐대!", "역시 내 여친, 이런 건 껌이지? 😎", "오늘 딘두 텐션 뭐야? 무적이야!",
             "딘두는 못하는 게 뭐야? 천재지?", "방금 그 판단력, 완전 ESTP 그 자체!", "딘두야, 너 진짜 멋있다! 반했어 ❤️", "게코들이 딘두 무빙 보고 박수친대!", "이걸 깨네? 역시 딘두는 능력자!",
-            "딘두의 손가락은 빛보다 빠르다! ✨", "역시 정글의 여왕 딘두! 👑", "딘두야 사랑해! 실력까지 최고야!", "딘두 실력, 진짜 폼 미쳤다! ㄷㄷ", "딘두야, 너 정체가 뭐야? 게임 신?",
-            "역시 똑똑한 내 여자친구 딘두!", "딘두야, 너 게임할 때 제일 섹시해!", "딘두 실력 보면 심장이 뛴다!", "딘두야, 영원히 나의 퀸이 되어줘! ❤️"
+            "딘두의 손가락은 빛보다 빠르다! ✨", "딘두님, 랭킹 1위 하러 오셨나요?", "역시 정글의 여왕 딘두! 👑", "딘두야, 다음 판도 박살내버려!", "방금 그 콤보, 예술이었어!",
+            "딘두 없는 게임은 팥 없는 찐빵이야!", "오늘따라 더 힙한 딘두의 게임 실력!", "딘두는 정글에서도 살아남을 천재야!", "게코들이 딘두 무서워서 다 숨었대!", "딘두야 사랑해! 실력까지 최고야!",
+            "완전 갓벽한 클리어! 역시 딘두!", "딘두의 뇌섹녀 매력에 또 빠졌다...", "방금 그 무빙, 나 소름 돋았어!", "딘두는 그냥 정글 마스터야!", "딘두야, 넌 나의 전설이야!",
+            "이건 딘두 아니면 못 깼다, 인정?", "딘두 실력, 진짜 폼 미쳤다! ㄷㄷ", "딘두는 운빨도 아니고 실력이야!", "게코들이 딘두 친구 하고 싶대!", "딘두의 승부욕, 완전 리스펙!",
+            "오늘도 정글을 지배하는 딘두!", "딘두야, 너 정체가 뭐야? 게임 신?", "딘두님, 팬클럽 가입 어디서 하나요?", "역시 화끈한 딘두식 클리어!", "딘두는 게코들 마음을 잘 아네!",
+            "방금 그 묘수, 딘두니까 가능했다!", "딘두야, 넌 그냥 최고라는 말밖에...", "딘두 실력 보면 심장이 뛴다!", "딘두가 정글에 뜨면 다 조용해져!", "역시 내꺼, 게임도 1등!",
+            "딘두의 두뇌 회전, 엔진 달았어?", "딘두는 못하는 게 없어, 사랑해!", "이 판의 주인공은 딘두 당신이야!", "게코들이 딘두 무빙 보고 기절했대!", "딘두는 게임할 때 제일 섹시해!",
+            "역시 똑똑한 내 여자친구 딘두!", "딘두야, 너 그냥 유전자부터 천재!", "정글을 씹어 먹는 딘두의 실력!", "딘두 실력, 상위 0.1% 확신함!", "딘두야, 넌 정글의 축복이야!",
+            "방금 그 터치, 완전 프로게이머급!", "딘두는 정글의 법이야! 그냥 법!", "딘두야, 넌 나의 우주야!", "게코들이 딘두 찬양해! 🦎", "역시 딘두, 멘탈까지 최강!",
+            "딘두야, 너 실력이 날로 느는구나!", "정글의 지배자 딘두, 등장이오!", "딘두는 정글에서도 스타가 될 거야!", "방금 클리어, 진짜 속 시원했다!", "딘두는 정글의 비타민이야!",
+            "딘두 실력 보면 스트레스 다 풀려!", "딘두야, 넌 그냥 보물이야 보물!", "정글 게코들이 딘두한테 줄 섰대!", "역시 딘두, 판단력 갑이다!", "딘두는 정글의 엔진이야!",
+            "딘두야, 너 게임 만드는 재능 있는 듯?", "방금 그건 신의 한 수였어!", "딘두는 정글에서도 제일 잘나갈 거야!", "역시 멋짐 뿜뿜 딘두!", "딘두야, 넌 그냥 나의 자랑이야!",
+            "딘두 실력, 이거 유료로 봐야 해!", "정글의 여신 딘두, 강림!", "딘두는 정글의 자존심이야!", "게코들이 딘두한테 반했대, 어떡해?", "딘두야, 너 실력 진짜 압도적이다!",
+            "역시 내 여친 딘두, 클라스가 달라!", "딘두는 정글의 햇살이야!", "방금 그 무빙, 딘두 전매특허지?", "딘두야, 넌 정글의 에이스야!", "역시 딘두, 클리어 속도 뭐야?",
+            "딘두 실력, 전설로 남을 판이다!", "정글의 평화는 딘두가 지킨다!", "딘두는 정글의 아이콘이야!", "게코들이 딘두 보고 울고 있대 (너무 잘해서)", "딘두야, 넌 그냥 나의 전부야!",
+            "역시 딘두, 이 판의 지배자!", "딘두 실력은 한계가 없구나!", "정글 게코들의 영웅, 딘두!", "방금 그 콤보, 딘두만의 센스!", "딘두야, 넌 정글의 레전드야!",
+            "역시 딘두, 지능과 미모를 다 갖췄네!", "정글에서 제일 핫한 딘두 실력!", "딘두야, 넌 그냥 나의 영웅이야!", "게코들이 딘두 사진 갖고 싶대!", "딘두는 정글의 심장이야!",
+            "역시 딘두, 클리어 폼 미쳤다!", "딘두 실력 보면 입이 안 다물어져!", "정글을 밝히는 딘두의 지능!", "방금 그 터치, 예술 점수 100점!", "딘두야, 영원히 나의 퀸이 되어줘! ❤️"
         ];
 
         const GECKO_MORPHS = [];
@@ -194,7 +215,7 @@
         function enterGame() { play('tap'); document.getElementById('title-screen').style.display = 'none'; }
 
         function init() {
-            const saved = localStorage.getItem('DinduUniverse_GitHub_FinalSafe');
+            const saved = localStorage.getItem('DinduUniverse_GitHub_VFinalSafe');
             if(saved) state = {...state, ...JSON.parse(saved)};
             startLevel(); initParticles();
         }
@@ -315,7 +336,8 @@
             document.getElementById('undo-count').innerText = `${state.inventory.undo}개`;
             document.getElementById('tube-count').innerText = `${state.inventory.tube}개`;
             document.getElementById('shuffle-count').innerText = `${state.inventory.shuffle}개`;
-            document.getElementById('collection-count').innerText = `${(state.collection.match(/1/g) || []).length}/1000`;
+            const unlockedCount = (state.collection.match(/1/g) || []).length;
+            document.getElementById('collection-count').innerText = `${unlockedCount}/1000`;
             document.getElementById('egg-bar').style.width = `${state.eggProgress}%`;
         }
 
