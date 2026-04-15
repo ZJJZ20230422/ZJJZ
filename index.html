@@ -21,20 +21,19 @@
         .logo-text { font-family: 'Black Han Sans'; font-size: 38px; color: var(--gold); text-align: center; text-shadow: 0 0 20px var(--gold); margin-bottom: 40px; }
         .start-btn { padding: 18px 60px; font-size: 24px; background: var(--emerald); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 8px 0 #064e3b; }
 
+        /* [Top UI] */
         .top-nav { padding: 10px 15px; background: rgba(0,0,0,0.8); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); flex-shrink: 0; }
         .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px; }
+        .btn-group { display: flex; gap: 5px; }
+        .nav-btn { padding: 6px 10px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--emerald); cursor: pointer; font-size: 13px; }
         .currency-box { background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 14px; }
-        .coupon-btn { background: #1e3a8a; border: 1px solid #60a5fa; color: white; padding: 5px 12px; border-radius: 10px; font-size: 11px; }
         .egg-progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 5px; }
         #egg-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f87171, #fbbf24, #10b981); transition: width 0.5s; }
-        
-        #combo-info { text-align: right; font-size: 12px; color: #ff0055; height: 15px; font-weight: bold; margin-top: 3px; opacity: 0; transition: 0.2s; }
+        #combo-info { text-align: right; font-size: 12px; color: #ff0055; height: 15px; font-weight: bold; opacity: 0; transition: 0.2s; }
         #combo-info.active { opacity: 1; transform: scale(1.15); }
 
-        #game-board { 
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; 
-            gap: 4px; padding: 10px 5px; flex-grow: 1; width: 100%; box-sizing: border-box;
-        }
+        /* [Game Board] */
+        #game-board { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; padding: 10px 5px; flex-grow: 1; width: 100%; box-sizing: border-box; }
         .tube-wrapper { position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: center; margin-top: 30px; }
         .tube {
             width: calc(var(--ball-size) + 12px); min-height: calc(var(--ball-size) * 4 + 15px); 
@@ -46,35 +45,31 @@
         .tube.completed .tube-cap { opacity: 1; top: -32px; }
         .tube.selected { transform: translateY(-15px); border-color: #fff; box-shadow: 0 0 20px var(--emerald); }
         .tube-base { position: absolute; bottom: -8px; width: 110%; height: 18px; background: linear-gradient(#5d4037, #3e2723); border-radius: 8px; z-index: -1; }
-
-        .ball { 
-            width: var(--ball-size); height: var(--ball-size); border-radius: 50%; margin: 1px 0; position: relative; 
-            background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); 
-            box-shadow: inset -3px -3px 8px rgba(0,0,0,0.5); 
-        }
+        .ball { width: var(--ball-size); height: var(--ball-size); border-radius: 50%; margin: 1px 0; position: relative; background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); box-shadow: inset -3px -3px 8px rgba(0,0,0,0.5); }
         .ball::after { content: ''; position: absolute; width: 100%; height: 100%; top:0; left:0; border-radius: 50%; opacity: 0.5; background-image: radial-gradient(var(--spot-color) 15%, transparent 20%); background-size: 10px 10px; }
 
-        .inventory { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85px;
-            padding: 5px 10px 15px; background: rgba(0,0,0,0.92); 
-            display: flex; justify-content: center; align-items: center; gap: 6px; 
-            z-index: 100; border-top: 2px solid var(--emerald); box-sizing: border-box;
-        }
-        .item-btn { 
-            background: linear-gradient(145deg, #064e3b, #022c22); border: 1.5px solid var(--emerald); 
-            color: white; padding: 5px; border-radius: 12px; font-size: 9px; cursor: pointer; 
-            display: flex; flex-direction: column; align-items: center; min-width: 60px; flex: 1;
-            height: 55px; justify-content: center;
-        }
+        /* [Inventory] */
+        .inventory { position: fixed; bottom: 0; left: 0; width: 100%; height: 85px; padding: 5px 10px 15px; background: rgba(0,0,0,0.92); display: flex; justify-content: center; align-items: center; gap: 6px; z-index: 100; border-top: 2px solid var(--emerald); box-sizing: border-box; }
+        .item-btn { background: linear-gradient(145deg, #064e3b, #022c22); border: 1.5px solid var(--emerald); color: white; padding: 5px; border-radius: 12px; font-size: 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; min-width: 60px; flex: 1; height: 55px; justify-content: center; }
 
-        .collection-container { background:#01110a; width:94%; border-radius:30px; border:2px solid var(--emerald); height:82vh; display:flex; flex-direction:column; position: relative; overflow: hidden; }
+        /* [Modals] */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; }
+        .card { background: #064e3b; padding: 25px; border-radius: 30px; border: 3px solid var(--gold); width: 88%; max-width: 380px; text-align: center; max-height: 85vh; overflow-y: auto; }
+        
+        /* [도감 & 실루엣] */
         .morph-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:15px; overflow-y: scroll; flex-grow: 1; }
         .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; border: 1.5px solid transparent; transition: 0.2s; }
         .morph-card.locked { opacity: 0.35; background: rgba(0,0,0,0.4); } 
         .morph-card.locked .char-icon { filter: grayscale(100%); } 
 
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; }
-        .card { background: #064e3b; padding: 25px; border-radius: 30px; border: 3px solid var(--gold); width: 88%; max-width: 380px; text-align: center; }
+        /* [가챠 결과 표시] */
+        .gacha-item { display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,0.08); margin-bottom:8px; border-radius:12px; border-left:4px solid var(--gold); position: relative; }
+        .duplicate-tag { background: #ef4444; color: white; font-size: 9px; padding: 2px 5px; border-radius: 4px; position: absolute; top: 5px; right: 5px; }
+        .payback-text { color: #fbbf24; font-size: 10px; font-weight: bold; margin-left: auto; }
+
+        /* [미션 UI] */
+        .mission-row { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid #10b981; text-align: left; }
+        .mission-status { float: right; font-weight: bold; color: var(--gold); }
     </style>
 </head>
 <body>
@@ -85,8 +80,10 @@
     <canvas id="particle-canvas"></canvas>
     <div class="top-nav">
         <div class="nav-row">
-            <div onclick="openCollection()" style="cursor:pointer; padding:6px 12px; background:rgba(0,0,0,0.4); border-radius:15px; border:1px solid var(--emerald);">📔 <span id="collection-count">1/1000</span></div>
-            <div id="lvl-display" style="font-size: 16px; font-weight: bold;">STAGE 01</div>
+            <div class="btn-group">
+                <div class="nav-btn" onclick="openCollection()">📔 도감 <span id="collection-count">0</span></div>
+                <div class="nav-btn" onclick="openMission()" style="border-color:var(--gold); color:var(--gold);">🏆 미션</div>
+            </div>
             <button class="coupon-btn" onclick="openCoupon()">쿠폰등록</button>
         </div>
         <div class="nav-row">
@@ -103,27 +100,42 @@
         <button class="item-btn" onclick="useShuffle()"><span>✨</span> 셔플 <div id="shuffle-count" style="color:var(--gold)">0개</div></button>
         <button class="item-btn" onclick="useAddTube()"><span>🧪</span> 튜브 <div id="tube-count" style="color:var(--gold)">0개</div></button>
     </div>
+
     <div id="shop-modal" class="modal">
         <div class="card">
-            <h2 style="color:var(--gold); margin-top:0;">🦖 DINDU SHOP</h2>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button onclick="confirmBuy('undo', 1, 150)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">↩️ 되돌리기 💎150</button>
-                <button onclick="confirmBuy('shuffle', 1, 500)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">✨ 셔플 💎500</button>
-                <button onclick="confirmBuy('tube', 1, 500)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-weight:bold;">🧪 튜브 💎500</button> <hr style="border:0; border-top:1px solid #ffffff33;">
-                <button onclick="confirmGacha(1, 500)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-weight:bold;">🥚 1회 부화 💎500</button>
-                <button onclick="confirmGacha(10, 4500)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-weight:bold;">🥚 10연속 부화 💎4500</button>
+            <h2 style="color:var(--gold); margin-top:0;">🦖 PREMIUM SHOP</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button onclick="confirmBuy('undo', 1, 100)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-size:11px;">↩️ 1개 100</button>
+                <button onclick="confirmBuy('undo', 10, 900)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-size:11px;">↩️ 10개 900</button>
+                <button onclick="confirmBuy('shuffle', 1, 100)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-size:11px;">✨ 1개 100</button>
+                <button onclick="confirmBuy('shuffle', 10, 900)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-size:11px;">✨ 10개 900</button>
+                <button onclick="confirmBuy('tube', 1, 500)" style="padding:10px; background:var(--gold); border:none; border-radius:10px; font-size:11px;">🧪 1개 500</button>
+                <button onclick="confirmBuy('tube', 10, 4500)" style="padding:10px; background:#f87171; color:white; border:none; border-radius:10px; font-size:11px;">🧪 10개 4500</button>
             </div>
-            <button onclick="closeModal('shop-modal')" style="margin-top:15px; width:100%; padding:15px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
+            <hr style="border:0; border-top:1px solid #ffffff33; margin:10px 0;">
+            <button onclick="confirmGacha(1, 500)" style="width:100%; padding:12px; background:#10b981; color:white; border:none; border-radius:10px; font-weight:bold; margin-bottom:5px;">🥚 랜덤 부화 1회 💎 500</button>
+            <button onclick="confirmGacha(10, 4500)" style="width:100%; padding:12px; background:#10b981; color:white; border:none; border-radius:10px; font-weight:bold;">🥚 10연속 부화 💎 4500</button>
+            <button onclick="closeModal('shop-modal')" style="margin-top:15px; width:100%; padding:12px; background:#374151; border:none; border-radius:15px; color:white;">닫기</button>
         </div>
     </div>
+
+    <div id="mission-modal" class="modal">
+        <div class="card">
+            <h2 style="color:var(--gold); margin-top:0;">🏆 콜렉터 미션</h2>
+            <div id="mission-list" style="text-align:left;"></div>
+            <button onclick="closeModal('mission-modal')" style="margin-top:15px; width:100%; padding:12px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
+        </div>
+    </div>
+
     <div id="hatch-modal" class="modal">
         <div id="egg-icon" style="font-size:80px; animation: egg-shake 0.4s infinite;">🥚</div>
         <h2 id="hatch-msg" style="color: white; margin: 15px 0;">부화 중...</h2>
-        <div id="hatch-result-area" style="display:none; width: 90%;">
+        <div id="hatch-result-area" style="display:none; width: 92%;">
             <div id="gacha-result-list" style="max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:10px;"></div>
             <button onclick="closeHatch()" style="margin-top: 15px; width:100%; padding:15px; background:var(--gold); border:none; border-radius:12px; font-weight:bold;">확인</button>
         </div>
     </div>
+
     <div id="collection-modal" class="modal">
         <div class="collection-container">
             <div style="background:#022c22; padding:15px; text-align:center; border-bottom:2px solid var(--emerald); position:relative;">
@@ -133,6 +145,7 @@
             <div id="morph-grid" class="morph-grid"></div>
         </div>
     </div>
+
     <div id="win-modal" class="modal">
         <div style="font-size:70px;">🦖</div>
         <h2 id="win-praise" style="padding:0 30px; text-align:center; font-size:20px; color:var(--gold);"></h2>
@@ -157,13 +170,17 @@
         for(let i=0; i<1000; i++) {
             const pre = ["슈퍼","하이","블러드","미스틱","골든","갤럭시","팬텀","스노우"];
             const mid = ["레오파드","크레스티드","가고일","토카이","펫테일","납테일"];
-            GECKO_MORPHS.push({ name: `${pre[i%pre.length]} ${mid[i%mid.length]} 게코`, icon: animIcons[i%animIcons.length] });
+            const icon = animIcons[i % animIcons.length];
+            // 특별 보상 게코는 특정 인덱스에 배치 (예: 100, 200, 300...)
+            GECKO_MORPHS.push({ name: `${pre[i%pre.length]} ${mid[i%mid.length]} 게코`, icon: icon });
         }
 
         let state = {
             level: 1, coins: 500, tubes: [], selected: null, history: [],
             inventory: { undo: 2, tube: 0, shuffle: 1 },
-            collection: "1" + "0".repeat(999), eggProgress: 0, comboCount: 0, lastMoveTime: 0
+            collection: "1" + "0".repeat(999), eggProgress: 0, comboCount: 0, lastMoveTime: 0,
+            milestones: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+            claimed: []
         };
 
         function enterGame() { play('tap'); document.getElementById('title-screen').style.display = 'none'; }
@@ -180,18 +197,11 @@
             document.documentElement.style.setProperty('--ball-size', `${ballSize}px`);
         }
 
-        // [알고리즘 업데이트] 난이도 조절 로직
         function startLevel() {
             document.body.className = ''; document.body.classList.add(['day', 'night', 'cave'][state.level % 3]);
-            
-            // 7탄 보스 난이도 완화: 색깔 개수를 점진적으로 늘림
-            const colorCount = Math.min(3 + Math.floor(state.level / 2.5), 8); // 더 느리게 증가
-            // 빈 튜브 개수 보강: 최소 3개 제공 (기존 2개에서 상향)
-            const emptyTubes = 3; 
-            const tubeCount = Math.min(colorCount + emptyTubes, 12);
-            
+            const colorCount = Math.min(3 + Math.floor(state.level / 2.5), 8); 
+            const tubeCount = Math.min(colorCount + 3, 12);
             calculateBallSize(tubeCount);
-
             let balls = []; for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(COLORS[i]);
             balls.sort(() => Math.random() - 0.5);
             state.tubes = [];
@@ -232,7 +242,7 @@
                 state.history.push(JSON.stringify(state.tubes));
                 t.push(f.pop()); 
                 let now = Date.now();
-                if (now - state.lastMoveTime < 1500) { state.comboCount++; triggerCombo(); }
+                if (now - state.lastMoveTime < 1500) { state.comboCount++; if(state.comboCount >= 2) triggerCombo(); }
                 else { state.comboCount = 0; }
                 state.lastMoveTime = now;
                 state.selected = null; play('drop');
@@ -241,13 +251,11 @@
         }
 
         function triggerCombo() {
-            if(state.comboCount >= 2) {
-                state.coins += 5;
-                const info = document.getElementById('combo-info');
-                document.getElementById('combo-num').innerText = state.comboCount;
-                info.classList.add('active'); updateUI();
-                setTimeout(() => info.classList.remove('active'), 800);
-            }
+            state.coins += 5;
+            const info = document.getElementById('combo-info');
+            document.getElementById('combo-num').innerText = state.comboCount;
+            info.classList.add('active'); updateUI();
+            setTimeout(() => info.classList.remove('active'), 800);
         }
 
         function checkWin() { return state.tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b.ball === t[0].ball))); }
@@ -266,28 +274,89 @@
             document.getElementById('hatch-modal').style.display = 'flex';
             document.getElementById('hatch-result-area').style.display = 'none';
             document.getElementById('hatch-msg').innerText = "부화 중...";
+            
             setTimeout(() => {
                 play('hatch');
                 const list = document.getElementById('gacha-result-list'); list.innerHTML = '';
+                let totalRefund = 0;
+                const refundPerUnit = (count === 10) ? 225 : 250;
+
                 for(let i=0; i<count; i++) {
                     const idx = Math.floor(Math.random() * 1000);
-                    state.collection = state.collection.substring(0, idx) + '1' + state.collection.substring(idx + 1);
+                    const isDup = state.collection[idx] === '1';
                     const g = GECKO_MORPHS[idx];
+                    
+                    if (isDup) {
+                        totalRefund += refundPerUnit;
+                    } else {
+                        state.collection = state.collection.substring(0, idx) + '1' + state.collection.substring(idx + 1);
+                    }
+
                     const item = document.createElement('div');
-                    item.style.cssText = "display:flex; align-items:center; gap:10px; padding:8px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:10px; border-left:4px solid var(--gold);";
-                    item.innerHTML = `<span style="font-size:24px">${g.icon}</span><div style="text-align:left;"><b>${g.name}</b><br><small>No.${idx+1}</small></div>`;
+                    item.className = 'gacha-item';
+                    item.innerHTML = `
+                        <span style="font-size:24px">${g.icon}</span>
+                        <div><b>${g.name}</b><br><small>No.${idx+1}</small></div>
+                        ${isDup ? `<span class="duplicate-tag">중복</span><span class="payback-text">+${refundPerUnit}💎</span>` : ''}
+                    `;
                     list.appendChild(item);
                 }
+
+                if (totalRefund > 0) {
+                    state.coins += totalRefund;
+                    document.getElementById('hatch-msg').innerText = `총 ${totalRefund}💎 페이백 완료!`;
+                } else {
+                    document.getElementById('hatch-msg').innerText = "새로운 친구 탄생!";
+                }
+
                 document.getElementById('hatch-result-area').style.display = 'block';
-                document.getElementById('hatch-msg').innerText = `${count}마리 탄생!`;
                 save(); updateUI();
+                checkMilestone();
             }, 1200);
+        }
+
+        function checkMilestone() {
+            const count = (state.collection.match(/1/g) || []).length;
+            state.milestones.forEach(m => {
+                if (count >= m && !state.claimed.includes(m)) {
+                    state.claimed.push(m);
+                    triggerJackpot(m);
+                }
+            });
+        }
+
+        function triggerJackpot(m) {
+            confetti({ particleCount: 300, spread: 100, origin: { y: 0.5 } });
+            state.coins += 2000;
+            state.inventory.shuffle += 5;
+            state.inventory.undo += 5;
+            alert(`🎉 [대박] 도감 ${m}마리 달성! 딘두님 축하해요!\n💎 2,000개 + 아이템 선물 보따리 증정! ❤️`);
+            save(); updateUI();
+        }
+
+        function openMission() {
+            const count = (state.collection.match(/1/g) || []).length;
+            const list = document.getElementById('mission-list');
+            list.innerHTML = '';
+            state.milestones.forEach(m => {
+                const isDone = state.claimed.includes(m);
+                const row = document.createElement('div');
+                row.className = 'mission-row';
+                row.style.borderColor = isDone ? '#fbbf24' : '#10b981';
+                row.innerHTML = `
+                    <b>도감 ${m}마리 수집</b>
+                    <span class="mission-status">${isDone ? '✅ 완료' : (count + '/' + m)}</span>
+                    <div style="font-size:11px; margin-top:5px; color:#aaa;">보상: 리미티드 게코 + 2000💎 + 아이템 10개</div>
+                `;
+                list.appendChild(row);
+            });
+            document.getElementById('mission-modal').style.display = 'flex';
         }
 
         function openCoupon() {
             const code = prompt("비밀 쿠폰 입력! ❤️");
             if(code === "딘두사랑해") {
-                state.coins += 10000; alert("🎁 10,000 다이아몬드 지급! ❤️");
+                state.coins += 10000; alert("🎁 10,000 다이아몬드 지급 완료! ❤️");
                 updateUI(); save();
             } else if(code) alert("잘못된 번호야!");
         }
@@ -313,26 +382,20 @@
             document.getElementById('undo-count').innerText = `${state.inventory.undo}개`;
             document.getElementById('shuffle-count').innerText = `${state.inventory.shuffle}개`;
             document.getElementById('tube-count').innerText = `${state.inventory.tube}개`;
-            document.getElementById('collection-count').innerText = `${(state.collection.match(/1/g) || []).length}/1000`;
+            const unlocked = (state.collection.match(/1/g) || []).length;
+            document.getElementById('collection-count').innerText = unlocked;
             document.getElementById('egg-bar').style.width = `${state.eggProgress}%`;
             document.getElementById('egg-percent').innerText = state.eggProgress;
         }
 
-        function confirmBuy(type, amount, price) { if(confirm(`💎 ${price}개를 써서 구매할까?`)) { if(state.coins >= price) { state.coins -= price; state.inventory[type] += amount; updateUI(); save(); play('tap'); } else alert("다이아 부족!"); } }
+        function confirmBuy(type, amount, price) { if(confirm(`💎 ${price}개를 써서 ${amount}개를 구매할까?`)) { if(state.coins >= price) { state.coins -= price; state.inventory[type] += amount; updateUI(); save(); play('tap'); } else alert("다이아 부족!"); } }
         function confirmGacha(amount, price) { if(confirm(`💎 ${price}개를 써서 알을 부화시킬까?`)) { if(state.coins >= price) { state.coins -= price; hatchGacha(amount); } else alert("다이아 부족!"); } }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function openShop() { document.getElementById('shop-modal').style.display = 'flex'; }
         function nextLevel() { state.level++; document.getElementById('win-modal').style.display = 'none'; save(); startLevel(); }
         function closeHatch() { document.getElementById('hatch-modal').style.display = 'none'; }
         function useUndo() { if(state.inventory.undo > 0 && state.history.length) { state.inventory.undo--; state.tubes = JSON.parse(state.history.pop()); render(); updateUI(); save(); } }
-        function useAddTube() { 
-            if(state.inventory.tube > 0 && state.tubes.length < 12) { 
-                state.inventory.tube--; 
-                state.tubes.push([]); 
-                calculateBallSize(state.tubes.length);
-                render(); updateUI(); save(); 
-            } else if(state.tubes.length >= 12) alert("튜브가 이미 가득 찼어!");
-        }
+        function useAddTube() { if(state.inventory.tube > 0 && state.tubes.length < 12) { state.inventory.tube--; state.tubes.push([]); calculateBallSize(state.tubes.length); render(); updateUI(); save(); } }
         function useShuffle() { if(state.inventory.shuffle > 0) { play('hatch'); startLevel(); state.inventory.shuffle--; save(); } }
 
         function initParticles() {
