@@ -3,27 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>딘두 레오파드게코 - 리얼 유니버스</title>
+    <title>딘두 레오파드게코 - 에볼루션</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap');
         :root { --emerald: #10b981; --gold: #f59e0b; --bg-main: radial-gradient(circle, #065f46 0%, #022c22 100%); --ball-size: 50px; }
-        body { background: var(--bg-main); color: #ecfdf5; font-family: 'Jua', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; user-select: none; box-sizing: border-box; padding-bottom: 90px; }
+        body { background: var(--bg-main); color: #ecfdf5; font-family: 'Jua', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; user-select: none; box-sizing: border-box; padding-bottom: 90px; transition: background 0.5s; }
+        body.golden-stage { background: radial-gradient(circle, #f59e0b 0%, #78350f 100%); }
+        
         #particle-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -1; pointer-events: none; }
-        .full-screen { position: fixed; top:0; left:0; width:100%; height:100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5000; }
+        .full-screen { position: fixed; top:0; left:0; width:100%; height:100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5000; transition: 0.5s; }
         #title-screen { background: radial-gradient(circle, #065f46 0%, #020617 100%); }
-        .logo-text { font-family: 'Black Han Sans'; font-size: 38px; color: var(--gold); text-align: center; text-shadow: 0 0 20px var(--gold); margin-bottom: 40px; }
+        
+        /* 로비 게코 스타일 */
+        .lobby-gecko-area { position: relative; cursor: pointer; transform: scale(1.5); margin: 30px 0; transition: transform 0.2s; }
+        .lobby-gecko-area:active { transform: scale(1.3); }
+        .heart-fx { position: absolute; top: -20px; font-size: 20px; animation: heart-float 1s forwards; pointer-events: none; }
+        @keyframes heart-float { 0% { transform: translateY(0) opacity(1); } 100% { transform: translateY(-50px) opacity(0); } }
+        
+        .logo-text { font-family: 'Black Han Sans'; font-size: 38px; color: var(--gold); text-align: center; text-shadow: 0 0 20px var(--gold); }
         .start-btn { padding: 18px 60px; font-size: 24px; background: var(--emerald); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 8px 0 #064e3b; }
+        .feed-btn { margin-top: 15px; padding: 10px 25px; background: #92400e; color: white; border: 2px solid var(--gold); border-radius: 20px; font-size: 14px; cursor: pointer; }
+
+        /* [Top UI] */
         .top-nav { padding: 10px 12px; background: rgba(0,0,0,0.85); z-index: 10; border-bottom: 1px solid rgba(16, 185, 129, 0.3); flex-shrink: 0; }
         .nav-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px; position: relative; }
         .btn-group { display: flex; gap: 4px; }
         .nav-btn { padding: 6px 8px; background: rgba(0,0,0,0.4); border-radius: 10px; border: 1px solid var(--emerald); cursor: pointer; font-size: 11px; }
-        #lvl-display { font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--emerald); position: absolute; left: 50%; transform: translateX(-50%); width: 100px; text-align: center; pointer-events: none; }
+        #lvl-display { font-size: 18px; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--emerald); position: absolute; left: 50%; transform: translateX(-50%); width: 120px; text-align: center; pointer-events: none; }
         .currency-box { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 20px; color: var(--gold); border: 1.5px solid var(--gold); font-size: 13px; min-width: 65px; text-align: right; }
         .coupon-btn { background: #1e3a8a; border: 1px solid #60a5fa; color: white; padding: 5px 8px; border-radius: 8px; font-size: 10px; }
-        .egg-progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 4px; }
-        #egg-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #f87171, #fbbf24, #10b981); transition: width 0.5s; }
-        #combo-info { text-align: right; font-size: 11px; color: #ff0055; height: 14px; font-weight: bold; margin-top: 2px; opacity: 0; }
-        #combo-info.active { opacity: 1; transform: scale(1.1); }
+        
         #game-board { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; padding: 10px 5px; flex-grow: 1; width: 100%; box-sizing: border-box; }
         .tube-wrapper { position: relative; flex-shrink: 1; display: flex; flex-direction: column; align-items: center; margin-top: 35px; }
         .tube { width: calc(var(--ball-size) + 14px); min-height: calc(var(--ball-size) * 4 + 18px); border: 3px solid var(--tube-color, var(--emerald)); border-top: none; border-radius: 0 0 40px 40px; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(5px); display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 8px; cursor: pointer; transition: 0.2s; }
@@ -32,51 +41,55 @@
         .tube-cap { position: absolute; top: -35px; font-size: 28px; opacity: 0; transition: 0.5s; pointer-events: none; }
         .tube.completed .tube-cap { opacity: 1; top: -32px; }
         .tube.selected { transform: translateY(-15px); border-color: #fff; box-shadow: 0 0 20px var(--tube-color, var(--emerald)); }
-        .tube-base { position: absolute; bottom: -8px; width: 110%; height: 18px; background: linear-gradient(#5d4037, #3e2723); border-radius: 8px; z-index: -1; }
         
-        /* 공 스타일 & 스킨 강화 */
-        .ball { width: var(--ball-size); height: var(--ball-size); border-radius: 50%; margin: 1px 0; position: relative; background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); box-shadow: inset -3px -3px 8px rgba(0,0,0,0.5); font-size: 20px; display: flex; justify-content: center; align-items: center; color: white; transition: 0.2s; }
+        /* 공 & 특수 상태 */
+        .ball { width: var(--ball-size); height: var(--ball-size); border-radius: 50%; margin: 1px 0; position: relative; background-image: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4) 0%, transparent 60%); box-shadow: inset -3px -3px 8px rgba(0,0,0,0.5); font-size: 20px; display: flex; justify-content: center; align-items: center; }
         .ball::after { content: ''; position: absolute; width: 100%; height: 100%; top:0; left:0; border-radius: 50%; pointer-events: none; }
-        
-        /* 점박이 스킨 대폭 강화 */
-        .ball.skin-spotted::after { 
-            background-image: radial-gradient(rgba(0,0,0,0.5) 20%, transparent 25%), radial-gradient(rgba(255,255,255,0.3) 15%, transparent 20%);
-            background-size: 14px 14px;
-            background-position: 0 0, 7px 7px;
-            opacity: 0.8;
-        }
+        .ball.skin-spotted::after { background-image: radial-gradient(rgba(0,0,0,0.5) 20%, transparent 25%), radial-gradient(rgba(255,255,255,0.3) 15%, transparent 20%); background-size: 14px 14px; background-position: 0 0, 7px 7px; opacity: 0.8; }
         .ball.skin-heart::after { content: '❤️'; opacity: 0.8; font-size: 16px; display: flex; justify-content: center; align-items: center; }
         .ball.skin-star::after { content: '⭐'; opacity: 0.8; font-size: 16px; display: flex; justify-content: center; align-items: center; }
         .ball.skin-glow { box-shadow: 0 0 15px white, inset -3px -3px 8px rgba(0,0,0,0.5); border: 1px solid white; }
-        .ball.fog-active { background: #1a1a1a !important; box-shadow: none !important; border: 1px solid #333; }
-        .ball.fog-active::after { display: none !important; }
+        .ball.fog-active { background: #1a1a1a !important; box-shadow: none !important; }
+        .ball.frozen { filter: brightness(1.5); }
+        .ball.frozen::before { content: '❄️'; position: absolute; font-size: 24px; z-index: 2; opacity: 0.8; }
+        .ball.golden-egg { background: radial-gradient(circle, #fbbf24 0%, #92400e 100%) !important; border: 2px solid white; box-shadow: 0 0 15px var(--gold); }
 
         .inventory { position: fixed; bottom: 0; left: 0; width: 100%; height: 85px; padding: 5px 10px 15px; background: rgba(0,0,0,0.92); display: flex; justify-content: center; align-items: center; gap: 6px; z-index: 100; border-top: 2px solid var(--emerald); box-sizing: border-box; }
         .item-btn { background: linear-gradient(145deg, #064e3b, #022c22); border: 1.5px solid var(--emerald); color: white; padding: 5px; border-radius: 12px; font-size: 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; min-width: 60px; flex: 1; height: 55px; justify-content: center; }
+        
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; }
         .card { background: #064e3b; padding: 20px; border-radius: 30px; border: 3px solid var(--gold); width: 92%; max-width: 400px; text-align: center; max-height: 85vh; overflow-y: auto; position: relative; }
         .tab-menu { display: flex; gap: 5px; margin-bottom: 15px; }
         .tab-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 10px; cursor: pointer; font-size: 12px; }
         .tab-btn.active { background: var(--gold); color: black; font-weight: bold; }
         .shop-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
-        .shop-item { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .buy-btn { width: 100%; padding: 6px; background: var(--emerald); border: none; border-radius: 8px; color: white; font-size: 11px; cursor: pointer; }
         .buy-btn.owned { background: #374151; cursor: default; }
+
         .collection-container { background:#01110a; width:94%; border-radius:30px; border:2px solid var(--emerald); height:85vh; display:flex; flex-direction:column; position: relative; overflow: hidden; }
         .collection-header { position: relative; background: #022c22; padding: 18px; border-bottom: 2px solid var(--emerald); display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .close-x { position: absolute; right: 20px; font-size: 36px; color: var(--gold); cursor: pointer; font-family: Arial, sans-serif; font-weight: bold; z-index: 7000; }
+        .close-x { position: absolute; right: 20px; font-size: 36px; color: var(--gold); cursor: pointer; font-family: Arial; font-weight: bold; z-index: 7000; }
         .morph-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:15px; overflow-y: auto; flex-grow: 1; }
-        .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 9px; border: 1.5px solid transparent; transition: 0.2s; }
-        .morph-card.locked { opacity: 0.35; background: rgba(0,0,0,0.4); } 
-        .morph-card.locked .char-icon { filter: grayscale(100%); } 
+        .morph-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 9px; border: 1.5px solid transparent; transition: 0.2s; position: relative; }
+        .main-tag { position: absolute; top: 5px; left: 5px; background: var(--gold); color: black; font-size: 8px; padding: 2px 4px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
-<body>
+<body id="game-body">
     <div id="title-screen" class="full-screen">
-        <div class="logo-text">딘두를 위한<br>리얼 유니버스 🦖</div>
+        <div class="logo-text">딘두를 위한<br>에볼루션 유니버스 🦖</div>
+        
+        <div class="lobby-gecko-area" onclick="lobbyHeartEffect(event)">
+            <div id="lobby-gecko-icon" style="font-size: 80px;">🐸</div>
+            <div id="lobby-gecko-name" style="margin-top: 10px; color: var(--gold); font-size: 18px;">딸기 팩맨</div>
+        </div>
+
         <button class="start-btn" onclick="enterGame()">탐험 시작하기</button>
+        <button class="feed-btn" onclick="feedMainGecko()">🐛 먹이 주기 (보유: <span id="food-count">0</span>)</button>
+        <p style="font-size: 11px; color: #ecfdf5; margin-top: 10px;">먹이를 주면 다이아를 얻어요!</p>
     </div>
+
     <canvas id="particle-canvas"></canvas>
+    
     <div class="top-nav">
         <div class="nav-row">
             <div class="btn-group">
@@ -93,13 +106,24 @@
         <div class="egg-progress-container"><div id="egg-bar"></div></div>
         <div id="combo-info">연속 성공 🔥 x<span id="combo-num">0</span> (+5💎)</div>
     </div>
+
     <div id="game-board"></div>
+
     <div class="inventory">
         <button class="item-btn" onclick="useUndo()"><span>↩️</span> 되돌리기 <div id="undo-count" style="color:var(--gold)">0개</div></button>
         <button class="item-btn" onclick="openShop()"><span>🏪</span> 상점</button>
         <button class="item-btn" onclick="useShuffle()"><span>✨</span> 셔플 <div id="shuffle-count" style="color:var(--gold)">0개</div></button>
         <button class="item-btn" onclick="useAddTube()"><span>🧪</span> 튜브 <div id="tube-count" style="color:var(--gold)">0개</div></button>
     </div>
+
+    <div id="ice-info-modal" class="modal">
+        <div class="card" style="border-color: #60a5fa;">
+            <h2 style="color: #60a5fa; margin-top: 0;">❄️ 빙하기 도래!</h2>
+            <p style="font-size: 14px; line-height: 1.6;">일부 공들이 꽁꽁 얼어붙어 움직이지 않습니다!<br><br><b>[해제 방법]</b><br>얼음 공을 <b>2번 연속 터치</b>하세요.<br>얼음이 깨지면 옮길 수 있습니다.</p>
+            <button onclick="closeModal('ice-info-modal')" style="width: 100%; padding: 15px; background: #60a5fa; color: white; border: none; border-radius: 15px; font-weight: bold;">얼음을 깨보자! 🔨</button>
+        </div>
+    </div>
+
     <div id="shop-modal" class="modal">
         <div class="card">
             <div class="tab-menu">
@@ -128,21 +152,7 @@
             <button onclick="closeModal('shop-modal')" style="margin-top:15px; width:100%; padding:12px; background:#374151; border:none; border-radius:15px; color:white;">닫기</button>
         </div>
     </div>
-    <div id="mission-modal" class="modal">
-        <div class="card">
-            <h2 style="color:var(--gold); margin-top:0;">🏆 콜렉터 미션</h2>
-            <div id="mission-list" style="text-align:left;"></div>
-            <button onclick="closeModal('mission-modal')" style="margin-top:15px; width:100%; padding:12px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
-        </div>
-    </div>
-    <div id="hatch-modal" class="modal">
-        <div id="egg-icon" style="font-size:80px; animation: egg-shake 0.4s infinite;">🥚</div>
-        <h2 id="hatch-msg" style="color: white; margin: 15px 0;">부화 중...</h2>
-        <div id="hatch-result-area" style="display:none; width: 92%;">
-            <div id="gacha-result-list" style="max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:10px;"></div>
-            <button onclick="closeHatch()" style="margin-top: 15px; width:100%; padding:15px; background:var(--gold); border:none; border-radius:12px; font-weight:bold; color:black;">확인</button>
-        </div>
-    </div>
+
     <div id="collection-modal" class="modal">
         <div class="collection-container">
             <div class="collection-header">
@@ -152,18 +162,37 @@
             <div id="morph-grid" class="morph-grid"></div>
         </div>
     </div>
+
+    <div id="hatch-modal" class="modal">
+        <div id="egg-icon" style="font-size:80px; animation: egg-shake 0.4s infinite;">🥚</div>
+        <h2 id="hatch-msg" style="color: white; margin: 15px 0;">부화 중...</h2>
+        <div id="hatch-result-area" style="display:none; width: 92%;">
+            <div id="gacha-result-list" style="max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:10px;"></div>
+            <button onclick="closeHatch()" style="margin-top: 15px; width:100%; padding:15px; background:var(--gold); border:none; border-radius:12px; font-weight:bold; color:black;">확인</button>
+        </div>
+    </div>
+
+    <div id="mission-modal" class="modal">
+        <div class="card">
+            <h2 style="color:var(--gold); margin-top:0;">🏆 콜렉터 미션</h2>
+            <div id="mission-list" style="text-align:left;"></div>
+            <button onclick="closeModal('mission-modal')" style="margin-top:15px; width:100%; padding:12px; background:var(--emerald); border:none; border-radius:15px; color:white;">닫기</button>
+        </div>
+    </div>
+
     <div id="win-modal" class="modal">
         <div style="font-size:70px;">🦖</div>
         <h2 id="win-praise" style="padding:0 30px; text-align:center; font-size:20px; color:var(--gold); line-height:1.4;"></h2>
         <button onclick="nextLevel()" style="padding:15px 60px; background:var(--emerald); border:none; border-radius:20px; color:white; font-size:18px; font-weight:bold; margin-top:15px;">다음 단계로</button>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
         const audio = { tap: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'), drop: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'), win: new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3'), hatch: new Audio('https://assets.mixkit.co/active_storage/sfx/1103/1103-preview.mp3') };
         function play(key) { audio[key].currentTime = 0; audio[key].play().catch(()=>{}); }
         const COLORS = [{ball:'#F87171',spot:'#7f1d1d'},{ball:'#34D399',spot:'#064e3b'},{ball:'#FBBF24',spot:'#78350f'},{ball:'#60A5FA',spot:'#1e3a8a'},{ball:'#A78BFA',spot:'#4c1d95'},{ball:'#F472B6',spot:'#831843'},{ball:'#FB923C',spot:'#7c2d12'},{ball:'#94A3B8',spot:'#1e293b'}];
-        const PRAISES = ["역시 딘두, 지능 1등급 인증! 🔥", "방금 무빙 뭐야? 완전 고수네!", "딘두야, 너 진짜 멋있다! 반했어 ❤️", "이걸 깨네? 역시 딘두는 능력자!", "역시 정글의 여왕 딘두! 👑", "딘두야 사랑해! 실력까지 최고야!", "딘두 실력, 진짜 폼 미쳤다! ㄷㄷ"];
-
+        
+        // 1000마리 무중복 데이터
         const GECKO_MORPHS = [];
         const amPre = ["딸기","살구","사무라이 블루","민트 판타지","뮤턴트","레몬초코","말차","버건디","커피","라임 알비노","선버스트","피카츄","에메랄드","스노우 화이트","크랜베리","브라운","블랙 오네이트","초코 민트","바나나","오렌지","레드 오네이트","골든","블루 카모","다크 그린","옐로우","라벤더","파스텔","아쿠아 블루","스트로베리 파인애플","밀크초코"];
         const amKind = ["팩맨","우파루파","독개구리","청개구리","나무개구리","살라만더","뉴트","도롱뇽","맹꽁이","황소개구리"];
@@ -189,32 +218,54 @@
             inventory: { undo: 2, tube: 0, shuffle: 1 }, 
             collection: "1" + "0".repeat(999), eggProgress: 0, comboCount: 0, lastMoveTime: 0, 
             milestones: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000], claimed: [],
-            ballSkin: 'normal', tubeSkin: '#10b981',
-            ownedBallSkins: ['normal'], ownedTubeSkins: ['#10b981'],
-            isHardMode: false, isFogMode: false, targetBalls: 4
+            ballSkin: 'normal', tubeSkin: '#10b981', ownedBallSkins: ['normal'], ownedTubeSkins: ['#10b981'],
+            isHardMode: false, isFogMode: false, targetBalls: 4, 
+            mainGeckoIdx: 0, foodCount: 0, hasSeenIceInfo: false, isGoldenStage: false
         };
 
         function enterGame() { play('tap'); document.getElementById('title-screen').style.display = 'none'; }
-        function init() { const saved = localStorage.getItem('Dindu_LeopardGecko_Eternal_Save'); if(saved) state = {...state, ...JSON.parse(saved)}; startLevel(); initParticles(); updateUI(); }
-        function calculateBallSize(count) { 
-            const maxTubeWidth = window.innerWidth / count - 6; 
-            const ballSize = Math.min(Math.max(maxTubeWidth - 14, 25), 54); 
-            document.documentElement.style.setProperty('--ball-size', `${ballSize}px`); 
+        function init() { const saved = localStorage.getItem('Dindu_LeopardGecko_Eternal_Save'); if(saved) state = {...state, ...JSON.parse(saved)}; startLevel(); initParticles(); updateUI(); updateLobby(); }
+        
+        function updateLobby() {
+            const gecko = GECKO_MORPHS[state.mainGeckoIdx];
+            document.getElementById('lobby-gecko-icon').innerText = gecko.icon;
+            document.getElementById('lobby-gecko-name').innerText = gecko.name;
+            document.getElementById('food-count').innerText = state.foodCount;
         }
 
+        function lobbyHeartEffect(e) {
+            const heart = document.createElement('div'); heart.className = 'heart-fx'; heart.innerText = '❤️';
+            heart.style.left = `${e.clientX - 20}px`; heart.style.top = `${e.clientY - 40}px`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+            play('tap');
+        }
+
+        function feedMainGecko() {
+            if (state.foodCount > 0) {
+                state.foodCount--; state.coins += 10;
+                confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
+                updateLobby(); updateUI(); save();
+            } else { alert('먹이가 없어요! 게임을 클리어해서 찾아보세요!'); }
+        }
+
+        function calculateBallSize(count) { const maxTubeWidth = window.innerWidth / count - 6; const ballSize = Math.min(Math.max(maxTubeWidth - 14, 25), 54); document.documentElement.style.setProperty('--ball-size', `${ballSize}px`); }
+
         function startLevel() {
-            document.body.className = ''; document.body.classList.add(['day', 'night', 'cave'][state.level % 3]);
-            state.targetBalls = 4;
-            state.isHardMode = false; state.isFogMode = false;
+            document.getElementById('game-body').className = ''; 
+            state.targetBalls = 4; state.isHardMode = false; state.isFogMode = false; state.isGoldenStage = false;
             
-            // 180단계 이상 특수 난이도
+            // 황금 알 스테이지 체크
+            if (state.level % 10 === 0) { state.isGoldenStage = true; document.getElementById('game-body').classList.add('golden-stage'); }
+            
+            let isIceStage = false;
             if (state.level >= 180) {
-                if (Math.random() < 0.4) { 
-                    state.isHardMode = true; 
-                    state.targetBalls = (Math.random() > 0.5) ? 5 : 6; 
-                }
+                if (Math.random() < 0.4) { state.isHardMode = true; state.targetBalls = (Math.random() > 0.5) ? 5 : 6; }
                 if (Math.random() < 0.35) state.isFogMode = true;
+                if (Math.random() < 0.3) isIceStage = true;
             }
+
+            if (isIceStage && !state.hasSeenIceInfo) { document.getElementById('ice-info-modal').style.display = 'flex'; state.hasSeenIceInfo = true; }
 
             const colorCount = Math.min(3 + Math.floor(state.level / 2.5), 8); 
             const tubeCount = Math.min(colorCount + 3, 12);
@@ -223,7 +274,8 @@
             let ballsArr = []; 
             for(let i=0; i<colorCount; i++) {
                 for(let j=0; j<state.targetBalls; j++) {
-                    ballsArr.push({...COLORS[i], revealed: false});
+                    const isFrozen = isIceStage && (j < state.targetBalls - 1) && (Math.random() < 0.4);
+                    ballsArr.push({...COLORS[i], revealed: false, frozen: isFrozen});
                 }
             }
             ballsArr.sort(() => Math.random() - 0.5);
@@ -242,7 +294,6 @@
             const board = document.getElementById('game-board'); board.innerHTML = '';
             state.tubes.forEach((balls, idx) => {
                 const wrapper = document.createElement('div'); wrapper.className = 'tube-wrapper';
-                // [수정] 정확히 타겟 개수가 모여야 도마뱀 활성화
                 const isComplete = balls.length === state.targetBalls && balls.every(b => b.ball === balls[0].ball);
                 const tube = document.createElement('div');
                 tube.className = `tube ${state.selected === idx ? 'selected' : ''} ${isComplete ? 'completed' : ''} ${state.targetBalls === 5 ? 'hard-5' : (state.targetBalls === 6 ? 'hard-6' : '')}`;
@@ -251,12 +302,10 @@
                 tube.appendChild(cap);
                 balls.forEach((data, bIdx) => {
                     const ball = document.createElement('div'); 
-                    ball.className = `ball ${state.ballSkin}`;
+                    ball.className = `ball ${state.ballSkin} ${data.frozen ? 'frozen' : ''} ${state.isGoldenStage ? 'golden-egg' : ''}`;
                     ball.style.backgroundColor = data.ball; 
                     ball.style.setProperty('--spot-color', data.spot);
-                    if (state.isFogMode && !data.revealed) {
-                        ball.classList.add('fog-active'); ball.innerText = '?';
-                    } else { ball.innerText = ''; }
+                    if (state.isFogMode && !data.revealed) ball.classList.add('fog-active');
                     tube.appendChild(ball);
                 });
                 const base = document.createElement('div'); base.className = 'tube-base';
@@ -265,113 +314,83 @@
         }
 
         function handleTap(idx) {
-            play('tap');
-            if (state.selected === null) { if (state.tubes[idx].length > 0) state.selected = idx; }
+            const tube = state.tubes[idx];
+            if (tube.length > 0) {
+                const topBall = tube[tube.length - 1];
+                if (topBall.frozen) { // 얼음 깨기 로직
+                    topBall.freezeCount = (topBall.freezeCount || 0) + 1;
+                    play('drop');
+                    if (topBall.freezeCount >= 2) { topBall.frozen = false; play('tap'); }
+                    render(); return;
+                }
+            }
+            if (state.selected === null) { if (tube.length > 0) state.selected = idx; }
             else { if (state.selected === idx) state.selected = null; else move(state.selected, idx); }
             render();
         }
 
         function move(from, to) {
             const f = state.tubes[from]; const t = state.tubes[to];
-            // 튜브 한계치를 타겟 개수 + 1로 설정하여 유동성 확보
             if (t.length < (state.targetBalls + 1) && (t.length === 0 || t[t.length-1].ball === f[f.length-1].ball)) {
                 state.history.push(JSON.stringify(state.tubes));
-                let ball = f.pop(); ball.revealed = true;
-                t.push(ball); 
+                let ball = f.pop(); ball.revealed = true; t.push(ball); 
                 if (f.length > 0) f[f.length - 1].revealed = true;
                 let now = Date.now();
                 if (now - state.lastMoveTime < 1500) { state.comboCount++; if(state.comboCount >= 2) triggerCombo(); }
                 else { state.comboCount = 0; }
-                state.lastMoveTime = now;
-                state.selected = null; play('drop');
+                state.lastMoveTime = now; state.selected = null; play('drop');
                 if(checkWin()) setTimeout(showWin, 600);
             } else { state.selected = null; }
         }
 
-        function triggerCombo() { state.coins += 5; const info = document.getElementById('combo-info'); document.getElementById('combo-num').innerText = state.comboCount; info.classList.add('active'); updateUI(); setTimeout(() => info.classList.remove('active'), 800); }
-        // [수정] 모든 공이 정확하게 타겟 개수만큼 튜브에 정렬되어야 클리어
-        function checkWin() { 
-            return state.tubes.every(t => t.length === 0 || (t.length === state.targetBalls && t.every(b => b.ball === t[0].ball))); 
-        }
+        function checkWin() { return state.tubes.every(t => t.length === 0 || (t.length === state.targetBalls && t.every(b => b.ball === t[0].ball))); }
 
         function showWin() {
-            play('win'); document.getElementById('win-praise').innerText = PRAISES[Math.floor(Math.random()*PRAISES.length)];
+            play('win'); 
+            const baseReward = state.isGoldenStage ? 500 : 100;
+            state.coins += baseReward; state.eggProgress += 20;
+            if (Math.random() < 0.3) { state.foodCount++; } // 30% 확률로 먹이 획득
+
+            const praise = state.isGoldenStage ? "🎉 잭팟! 황금 알을 모두 모았어요!" : ["역시 딘두, 지능 1등급 인증! 🔥", "방금 무빙 뭐야? 완전 고수네!", "딘두야, 너 진짜 멋있다! ❤️"][state.level % 3];
+            document.getElementById('win-praise').innerText = praise;
             document.getElementById('win-modal').style.display = 'flex';
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            state.coins += 100; state.eggProgress += 20;
+            confetti({ particleCount: state.isGoldenStage ? 300 : 150, spread: 70, origin: { y: 0.6 } });
+            
+            if (state.isGoldenStage) { state.collection = state.collection.substring(0, 0) + '1' + state.collection.substring(1); } // 보너스 처리 등
             if (state.eggProgress >= 100) { state.eggProgress = 0; setTimeout(() => hatchGacha(1), 1000); }
-            save(); updateUI();
+            save(); updateUI(); updateLobby();
         }
 
-        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; switchShop('item'); }
-        function switchShop(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            ['item', 'skin', 'gacha'].forEach(t => document.getElementById(`shop-${t}-tab`).style.display = (t === tab ? 'block' : 'none'));
-            if(tab === 'skin') renderSkinShop();
-        }
-        function renderSkinShop() {
-            const bList = document.getElementById('ball-skin-list');
-            bList.innerHTML = BALL_SKINS.map(s => `<div class="shop-item"><div class="ball ${s.id}" style="background-color:#f87171; width:30px; height:30px;"></div><span style="font-size:10px;">${s.name}</span><button onclick="buySkin('ball', '${s.id}', ${s.price})" class="buy-btn ${state.ownedBallSkins.includes(s.id)?'owned':''}">${state.ownedBallSkins.includes(s.id)? (state.ballSkin === s.id ? '장착중' : '장착하기') : s.price+'💎'}</button></div>`).join('');
-            const tList = document.getElementById('tube-skin-list');
-            tList.innerHTML = TUBE_SKINS.map(s => `<div class="shop-item"><div style="width:20px; height:30px; border:2px solid ${s.id}; border-top:none; border-radius:0 0 10px 10px;"></div><span style="font-size:10px;">${s.name}</span><button onclick="buySkin('tube', '${s.id}', ${s.price})" class="buy-btn ${state.ownedTubeSkins.includes(s.id)?'owned':''}">${state.ownedTubeSkins.includes(s.id)? (state.tubeSkin === s.id ? '장착중' : '장착하기') : s.price+'💎'}</button></div>`).join('');
-        }
-        function buySkin(type, id, price) {
-            const owned = (type === 'ball') ? state.ownedBallSkins : state.ownedTubeSkins;
-            if (owned.includes(id)) { if(type === 'ball') state.ballSkin = id; else state.tubeSkin = id; document.documentElement.style.setProperty('--tube-color', state.tubeSkin); save(); render(); renderSkinShop(); return; }
-            if (state.coins >= price) { state.coins -= price; owned.push(id); save(); updateUI(); renderSkinShop(); alert('구매 완료!'); } else alert('다이아 부족!');
-        }
-        function hatchGacha(count) {
-            document.getElementById('hatch-modal').style.display = 'flex'; document.getElementById('hatch-result-area').style.display = 'none';
-            setTimeout(() => {
-                play('hatch'); const list = document.getElementById('gacha-result-list'); list.innerHTML = ''; let totalRefund = 0;
-                for(let i=0; i<count; i++) {
-                    const idx = Math.floor(Math.random() * 1000); const isDup = state.collection[idx] === '1'; const g = GECKO_MORPHS[idx];
-                    if (isDup) totalRefund += (count===10?225:250); else state.collection = state.collection.substring(0, idx) + '1' + state.collection.substring(idx + 1);
-                    const item = document.createElement('div'); item.className = 'gacha-item';
-                    item.innerHTML = `<span style="font-size:24px">${g.icon}</span><div><b>${g.name}</b><br><small>번호.${idx+1}</small></div>${isDup ? `<span class="duplicate-tag">중복</span><span class="payback-text">+${(count===10?225:250)}💎</span>` : ''}`;
-                    list.appendChild(item);
-                }
-                if (totalRefund > 0) { state.coins += totalRefund; document.getElementById('hatch-msg').innerText = `${totalRefund}💎 회수 완료!`; } else document.getElementById('hatch-msg').innerText = "새 친구 탄생!";
-                document.getElementById('hatch-result-area').style.display = 'block'; save(); updateUI(); checkMilestone();
-            }, 1200);
-        }
-        function checkMilestone() { const count = (state.collection.match(/1/g) || []).length; state.milestones.forEach(m => { if (count >= m && !state.claimed.includes(m)) { state.claimed.push(m); triggerJackpot(m); } }); }
-        function triggerJackpot(m) { confetti({ particleCount: 300, spread: 100, origin: { y: 0.5 } }); state.coins += 2000; state.inventory.shuffle += 5; state.inventory.undo += 5; alert(`🎉 도감 ${m}마리 달성!\n💎 2,000개 + 아이템 보너스 증정! ❤️`); save(); updateUI(); }
-        function openMission() {
-            const count = (state.collection.match(/1/g) || []).length; const list = document.getElementById('mission-list'); list.innerHTML = '';
-            state.milestones.forEach(m => {
-                const isDone = state.claimed.includes(m); const row = document.createElement('div'); row.className = 'mission-row';
-                row.style.borderColor = isDone ? '#fbbf24' : '#10b981';
-                row.innerHTML = `<b>도감 ${m}마리 수집</b><span style="float:right;">${isDone ? '✅ 완료' : (count + '/' + m)}</span><div style="font-size:11px; margin-top:5px; color:#aaa;">보상: 2000💎 + 아이템 패키지</div>`;
-                list.appendChild(row);
-            });
-            document.getElementById('mission-modal').style.display = 'flex';
-        }
-        function openCoupon() { const code = prompt("비밀 쿠폰 입력! ❤️"); if(code === "딘두사랑해") { state.coins += 10000; updateUI(); save(); alert("🎁 10,000 다이아몬드 지급 완료! ❤️"); } else if(code) alert("잘못된 번호야!"); }
+        function setMainGecko(idx) { state.mainGeckoIdx = idx; save(); updateLobby(); alert(`${GECKO_MORPHS[idx].name}(이)가 메인 게코가 되었습니다!`); }
+
         function openCollection() {
             const grid = document.getElementById('morph-grid'); grid.innerHTML = ''; document.getElementById('collection-modal').style.display = 'flex';
             const frag = document.createDocumentFragment();
             for(let i=0; i<1000; i++) {
                 const isU = state.collection[i] === '1'; const g = GECKO_MORPHS[i];
                 const card = document.createElement('div'); card.className = `morph-card ${isU ? '' : 'locked'}`;
-                card.innerHTML = `<div class="char-icon" style="font-size:28px">${g.icon}</div><div class="name-text" style="margin-top:5px; font-weight:bold;">${g.name}</div><div style="font-size:8px; opacity:0.3;">번호.${i+1}</div>`;
+                if (isU) card.onclick = () => setMainGecko(i);
+                card.innerHTML = `${state.mainGeckoIdx === i ? '<span class="main-tag">대표</span>' : ''}<div class="char-icon" style="font-size:28px">${g.icon}</div><div style="margin-top:5px; font-weight:bold;">${g.name}</div><div style="font-size:8px; opacity:0.3;">번호.${i+1}</div>`;
                 frag.appendChild(card);
             }
             grid.appendChild(frag);
         }
-        function save() { localStorage.setItem('Dindu_LeopardGecko_Eternal_Save', JSON.stringify(state)); }
-        function updateUI() {
-            document.getElementById('lvl-display').innerText = `단계 ${state.level.toString().padStart(2, '0')}`;
-            document.getElementById('coin-display').innerText = Math.floor(state.coins).toLocaleString();
-            document.getElementById('undo-count').innerText = `${state.inventory.undo}개`;
-            document.getElementById('shuffle-count').innerText = `${state.inventory.shuffle}개`;
-            document.getElementById('tube-count').innerText = `${state.inventory.tube}개`;
-            const unlocked = (state.collection.match(/1/g) || []).length;
-            document.getElementById('collection-count').innerText = unlocked;
-            document.getElementById('egg-bar').style.width = `${state.eggProgress}%`;
-            document.getElementById('egg-percent').innerText = state.eggProgress;
+
+        // 공통 상점/아이템/쿠폰 로직 (기존 유지)
+        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; switchShop('item'); }
+        function switchShop(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); if(event) event.target.classList.add('active'); ['item', 'skin', 'gacha'].forEach(t => document.getElementById(`shop-${t}-tab`).style.display = (t === tab ? 'block' : 'none')); if(tab === 'skin') renderSkinShop(); }
+        function renderSkinShop() {
+            const bList = document.getElementById('ball-skin-list'); bList.innerHTML = BALL_SKINS.map(s => `<div class="shop-item"><div class="ball ${s.id}" style="background-color:#f87171; width:30px; height:30px;"></div><span style="font-size:10px;">${s.name}</span><button onclick="buySkin('ball', '${s.id}', ${s.price})" class="buy-btn ${state.ownedBallSkins.includes(s.id)?'owned':''}">${state.ownedBallSkins.includes(s.id)? (state.ballSkin === s.id ? '장착중' : '장착하기') : s.price+'💎'}</button></div>`).join('');
+            const tList = document.getElementById('tube-skin-list'); tList.innerHTML = TUBE_SKINS.map(s => `<div class="shop-item"><div style="width:20px; height:30px; border:2px solid ${s.id}; border-top:none; border-radius:0 0 10px 10px;"></div><span style="font-size:10px;">${s.name}</span><button onclick="buySkin('tube', '${s.id}', ${s.price})" class="buy-btn ${state.ownedTubeSkins.includes(s.id)?'owned':''}">${state.ownedTubeSkins.includes(s.id)? (state.tubeSkin === s.id ? '장착중' : '장착하기') : s.price+'💎'}</button></div>`).join('');
         }
+        function buySkin(type, id, price) { const owned = (type === 'ball') ? state.ownedBallSkins : state.ownedTubeSkins; if (owned.includes(id)) { if(type === 'ball') state.ballSkin = id; else state.tubeSkin = id; document.documentElement.style.setProperty('--tube-color', state.tubeSkin); save(); render(); renderSkinShop(); return; } if (state.coins >= price) { state.coins -= price; owned.push(id); save(); updateUI(); renderSkinShop(); } else alert('다이아 부족!'); }
+        function hatchGacha(count) { document.getElementById('hatch-modal').style.display = 'flex'; document.getElementById('hatch-result-area').style.display = 'none'; setTimeout(() => { play('hatch'); const list = document.getElementById('gacha-result-list'); list.innerHTML = ''; let totalRefund = 0; for(let i=0; i<count; i++) { const idx = Math.floor(Math.random() * 1000); const isDup = state.collection[idx] === '1'; const g = GECKO_MORPHS[idx]; if (isDup) totalRefund += (count===10?225:250); else state.collection = state.collection.substring(0, idx) + '1' + state.collection.substring(idx + 1); const item = document.createElement('div'); item.className = 'gacha-item'; item.innerHTML = `<span style="font-size:24px">${g.icon}</span><div><b>${g.name}</b><br><small>번호.${idx+1}</small></div>${isDup ? `<span class="duplicate-tag">중복</span><span class="payback-text">+${(count===10?225:250)}💎</span>` : ''}`; list.appendChild(item); } if (totalRefund > 0) { state.coins += totalRefund; document.getElementById('hatch-msg').innerText = `${totalRefund}💎 회수!`; } else document.getElementById('hatch-msg').innerText = "새 친구 탄생!"; document.getElementById('hatch-result-area').style.display = 'block'; save(); updateUI(); checkMilestone(); }, 1200); }
+        function checkMilestone() { const count = (state.collection.match(/1/g) || []).length; state.milestones.forEach(m => { if (count >= m && !state.claimed.includes(m)) { state.claimed.push(m); triggerJackpot(m); } }); }
+        function triggerJackpot(m) { confetti({ particleCount: 300, spread: 100, origin: { y: 0.5 } }); state.coins += 2000; state.inventory.shuffle += 5; state.inventory.undo += 5; alert(`🎉 도감 ${m}마리 달성!\n💎 2,000개 + 아이템 보따리 증정! ❤️`); save(); updateUI(); }
+        function openMission() { const count = (state.collection.match(/1/g) || []).length; const list = document.getElementById('mission-list'); list.innerHTML = ''; state.milestones.forEach(m => { const isDone = state.claimed.includes(m); const row = document.createElement('div'); row.className = 'mission-row'; row.style.borderColor = isDone ? '#fbbf24' : '#10b981'; row.innerHTML = `<b>도감 ${m}마리 수집</b><span style="float:right;">${isDone ? '✅ 완료' : (count + '/' + m)}</span><div style="font-size:11px; margin-top:5px; color:#aaa;">보상: 2000💎 + 아이템 패키지</div>`; list.appendChild(row); }); document.getElementById('mission-modal').style.display = 'flex'; }
+        function openCoupon() { const code = prompt("비밀 쿠폰 입력! ❤️"); if(code === "딘두사랑해") { state.coins += 10000; updateUI(); save(); alert("🎁 10,000 다이아몬드 지급 완료! ❤️"); } else if(code) alert("잘못된 번호야!"); }
+        function save() { localStorage.setItem('Dindu_LeopardGecko_Eternal_Save', JSON.stringify(state)); }
+        function updateUI() { document.getElementById('lvl-display').innerText = `단계 ${state.level.toString().padStart(2, '0')}`; document.getElementById('coin-display').innerText = Math.floor(state.coins).toLocaleString(); document.getElementById('undo-count').innerText = `${state.inventory.undo}개`; document.getElementById('shuffle-count').innerText = `${state.inventory.shuffle}개`; document.getElementById('tube-count').innerText = `${state.inventory.tube}개`; const unlocked = (state.collection.match(/1/g) || []).length; document.getElementById('collection-count').innerText = unlocked; document.getElementById('egg-bar').style.width = `${state.eggProgress}%`; document.getElementById('egg-percent').innerText = state.eggProgress; }
         function confirmBuy(type, amount, price) { if(confirm(`💎 ${price}개를 써서 ${amount}개를 구매할까?`)) { if(state.coins >= price) { state.coins -= price; state.inventory[type] += amount; updateUI(); save(); play('tap'); } else alert("다이아 부족!"); } }
         function confirmGacha(amount, price) { if(confirm(`💎 ${price}개를 써서 부화시킬까?`)) { if(state.coins >= price) { state.coins -= price; hatchGacha(amount); } else alert("다이아 부족!"); } }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
